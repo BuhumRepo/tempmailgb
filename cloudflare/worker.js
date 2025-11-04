@@ -268,7 +268,13 @@ async function handleGetInbox(db, email) {
     'SELECT * FROM inbox WHERE email_address = ? ORDER BY timestamp DESC'
   ).bind(email).all();
 
-  return new Response(JSON.stringify({ emails: result.results || [] }), {
+  // Map database fields to frontend-expected fields
+  const emails = (result.results || []).map(email => ({
+    ...email,
+    from: email.from_address  // Map from_address to from for frontend compatibility
+  }));
+
+  return new Response(JSON.stringify({ emails }), {
     headers: corsHeaders
   });
 }
@@ -345,7 +351,13 @@ async function handleSimulateEmail(db, email) {
     'SELECT * FROM inbox WHERE id = ?'
   ).bind(result.meta.last_row_id).first();
 
-  return new Response(JSON.stringify(newEmail), {
+  // Map database fields to frontend-expected fields
+  const emailResponse = {
+    ...newEmail,
+    from: newEmail.from_address
+  };
+
+  return new Response(JSON.stringify(emailResponse), {
     headers: corsHeaders
   });
 }

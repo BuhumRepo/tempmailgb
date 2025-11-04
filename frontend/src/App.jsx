@@ -403,63 +403,87 @@ function App() {
             <div className="lg:col-span-2 bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden border border-gray-200">
               {selectedEmail ? (
                 <div className="h-full flex flex-col">
-                  <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-2xl font-bold text-gray-900">{selectedEmail.subject}</h3>
+                  <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-b border-gray-200 px-6 py-6">
+                    <div className="flex justify-between items-start mb-5">
+                      <div className="flex items-start space-x-3">
+                        <div className="p-3 bg-white rounded-xl shadow-sm border border-gray-200">
+                          <Mail className="w-6 h-6 text-indigo-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-gray-900 mb-1">{selectedEmail.subject}</h3>
+                          <div className="flex items-center space-x-2">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              selectedEmail.read ? 'bg-gray-100 text-gray-700' : 'bg-green-100 text-green-800'
+                            }`}>
+                              {selectedEmail.read ? 'Read' : 'Unread'}
+                            </span>
+                            <span className="text-xs text-gray-500">•</span>
+                            <Clock className="w-3.5 h-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-600">{formatTime(selectedEmail.timestamp)}</span>
+                          </div>
+                        </div>
+                      </div>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => shareAsNoteMail(selectedEmail)}
-                          className="p-2.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-all"
+                          className="p-2.5 bg-white hover:bg-purple-50 border border-purple-200 rounded-lg transition-all shadow-sm hover:shadow-md"
                           title="Share as NoteMail"
                         >
                           <ExternalLink className="w-5 h-5 text-purple-600" />
                         </button>
                         <button
                           onClick={() => deleteEmail(selectedEmail.id)}
-                          className="p-2.5 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all"
+                          className="p-2.5 bg-white hover:bg-red-50 border border-red-200 rounded-lg transition-all shadow-sm hover:shadow-md"
                           title="Delete email"
                         >
                           <Trash2 className="w-5 h-5 text-red-600" />
                         </button>
                       </div>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-start space-x-3">
-                        <span className="font-semibold text-gray-600 min-w-[60px]">From:</span>
-                        <span className="text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-lg flex-1">{selectedEmail.from}</span>
+                    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 space-y-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+                          <UserCheck className="w-4 h-4 text-blue-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">From</p>
+                          <p className="text-sm text-gray-900 font-medium truncate">{selectedEmail.from || 'Unknown Sender'}</p>
+                        </div>
                       </div>
-                      <div className="flex items-start space-x-3">
-                        <span className="font-semibold text-gray-600 min-w-[60px]">To:</span>
-                        <span className="text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-lg font-mono text-xs flex-1">{currentEmail}</span>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <span className="font-semibold text-gray-600 min-w-[60px]">Date:</span>
-                        <span className="text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-lg flex-1">{new Date(selectedEmail.timestamp).toLocaleString()}</span>
+                      <div className="border-t border-gray-100"></div>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center justify-center w-8 h-8 bg-green-100 rounded-full">
+                          <Mail className="w-4 h-4 text-green-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">To</p>
+                          <p className="text-sm text-gray-900 font-mono truncate">{currentEmail}</p>
+                        </div>
                       </div>
                     </div>
                     {/* View Mode Toggle - Only show if both HTML and plain text exist */}
                     {selectedEmail.html_body && selectedEmail.html_body !== selectedEmail.body.replace(/\n/g, '<br>') && (
-                      <div className="flex items-center justify-end space-x-2 px-6 py-2 bg-gray-50 border-t border-gray-200">
-                        <span className="text-xs text-gray-500">View:</span>
+                      <div className="flex items-center justify-center space-x-2 mt-4">
+                        <span className="text-xs font-medium text-gray-600">View Mode:</span>
                         <button
                           onClick={() => setViewMode('html')}
-                          className={`px-3 py-1 text-xs rounded-md transition-all ${
+                          className={`px-4 py-2 text-xs font-medium rounded-lg transition-all shadow-sm ${
                             viewMode === 'html' 
-                              ? 'bg-blue-600 text-white font-medium' 
-                              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                              ? 'bg-indigo-600 text-white shadow-md' 
+                              : 'bg-white text-gray-700 hover:bg-indigo-50 border border-gray-300'
                           }`}
                         >
-                          HTML
+                          📧 Rich HTML
                         </button>
                         <button
                           onClick={() => setViewMode('plain')}
-                          className={`px-3 py-1 text-xs rounded-md transition-all ${
+                          className={`px-4 py-2 text-xs font-medium rounded-lg transition-all shadow-sm ${
                             viewMode === 'plain' 
-                              ? 'bg-blue-600 text-white font-medium' 
-                              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                              ? 'bg-indigo-600 text-white shadow-md' 
+                              : 'bg-white text-gray-700 hover:bg-indigo-50 border border-gray-300'
                           }`}
                         >
-                          Plain Text
+                          📄 Plain Text
                         </button>
                       </div>
                     )}
