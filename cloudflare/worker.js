@@ -82,12 +82,42 @@ export default {
             }
           }
         } else {
-          // Single part email - use the body as-is
-          body = emailBody.trim();
-          console.log('Single part email, length:', body.length);
+          // Single part email - check if it's HTML or plain text
+          const contentType = rawEmail.match(/Content-Type:\s*([^;\s\r\n]+)/i);
+          const isHtml = contentType && contentType[1].includes('text/html');
+          
+          // Also check if body contains HTML tags
+          const hasHtmlTags = /<[a-z][\s\S]*>/i.test(emailBody);
+          
+          if (isHtml || hasHtmlTags) {
+            // It's HTML
+            htmlBody = emailBody.trim();
+            // Convert HTML to plain text
+            body = htmlBody
+              .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+              .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+              .replace(/<br\s*\/?>/gi, '\n')
+              .replace(/<\/p>/gi, '\n\n')
+              .replace(/<\/div>/gi, '\n')
+              .replace(/<\/li>/gi, '\n')
+              .replace(/<[^>]+>/g, ' ')
+              .replace(/&nbsp;/g, ' ')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&amp;/g, '&')
+              .replace(/&quot;/g, '"')
+              .replace(/\s+/g, ' ')
+              .trim();
+            console.log('Single part HTML email, length:', htmlBody.length);
+          } else {
+            // It's plain text
+            body = emailBody.trim();
+            htmlBody = body.replace(/\n/g, '<br>');
+            console.log('Single part plain text email, length:', body.length);
+          }
         }
         
-        // If we found HTML but no plain text, convert HTML to plain text
+        // Final fallback conversions
         if (htmlBody && !body) {
           body = htmlBody
             .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -104,7 +134,6 @@ export default {
             .trim();
         }
         
-        // If we found plain text but no HTML, convert plain to HTML
         if (body && !htmlBody) {
           htmlBody = body.replace(/\n/g, '<br>');
         }
