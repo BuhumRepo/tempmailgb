@@ -14,20 +14,44 @@ const corsHeaders = {
 // Generate random email address
 function generateEmail() {
   const randomStr = Math.random().toString(36).substring(2, 12);
-  const domains = [
-    'tempmail.com',
-    'quickmail.net',
-    'disposable.email',
-    'student.edu',
-    'university.edu',
-    'college.edu'
-  ];
-  const domain = domains[Math.floor(Math.random() * domains.length)];
-  return `${randomStr}@${domain}`;
+  return `${randomStr}@ainewmail.online`;
 }
 
 // Main Worker handler
 export default {
+  // Email handler for incoming emails
+  async email(message, env, ctx) {
+    const to = message.to;
+    const from = message.from;
+    const subject = message.headers.get('subject') || 'No Subject';
+    
+    // Extract plain text body
+    const reader = message.raw.getReader();
+    const decoder = new TextDecoder();
+    let emailBody = '';
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      emailBody += decoder.decode(value, { stream: true });
+    }
+    
+    // Simple body extraction (you might want to improve this)
+    const bodyMatch = emailBody.match(/Content-Type: text\/plain[\s\S]*?\n\n([\s\S]*?)(?=\n--|\n$)/);
+    const body = bodyMatch ? bodyMatch[1].trim() : emailBody.substring(0, 500);
+    
+    try {
+      // Save email to database
+      await env.DB.prepare(
+        'INSERT INTO inbox (email_address, from_address, subject, body, timestamp, read) VALUES (?, ?, ?, ?, ?, 0)'
+      ).bind(to, from, subject, body, Date.now()).run();
+      
+      console.log(`Email received: ${from} -> ${to}`);
+    } catch (error) {
+      console.error('Error saving email:', error);
+    }
+  },
+
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const { pathname } = url;
