@@ -1,0 +1,17 @@
+{
+  "name": "tempmailgb",
+  "version": "1.0.0",
+  "description": "TempMail GB - Temporary Email Service",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "install-all": "cd frontend && npm install && cd ../backend && npm install",
+    "dev": "npm run install-all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GTMAlive/tempmailgb"
+  },
+  "keywords": ["tempmail", "temporary-email", "disposable-email"],
+  "author": "GTMAlive",
+  "license": "MIT"
+}
