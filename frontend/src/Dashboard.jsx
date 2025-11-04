@@ -25,13 +25,16 @@ function Dashboard() {
     navigate('/');
   };
 
-  const sidebarItems = [
+  const sidebarItemsMain = [
     { id: 'overview', label: 'Overview', icon: Home },
     { id: 'inbox', label: 'Inbox', icon: Inbox, badge: '12' },
     { id: 'emails', label: 'Email Addresses', icon: Mail },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  ];
+
+  const sidebarItemsSettings = [
     { id: 'api', label: 'API Keys', icon: Key },
     { id: 'webhooks', label: 'Webhooks', icon: Webhook },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'billing', label: 'Billing', icon: CreditCard },
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'help', label: 'Help & Support', icon: HelpCircle },
@@ -100,7 +103,44 @@ function Dashboard() {
 
         {/* Navigation Items */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {sidebarItems.map((item) => {
+          {/* Main Navigation Section */}
+          {sidebarItemsMain.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveSection(item.id)}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                {!sidebarCollapsed && (
+                  <>
+                    <span className="flex-1 text-left font-medium">{item.label}</span>
+                    {item.badge && (
+                      <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                        isActive ? 'bg-white text-purple-600' : 'bg-purple-100 text-purple-600'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
+                )}
+              </button>
+            );
+          })}
+
+          {/* Divider */}
+          <div className="py-3">
+            <div className="border-t border-gray-200"></div>
+          </div>
+
+          {/* Settings & Configuration Section */}
+          {sidebarItemsSettings.map((item) => {
             const Icon = item.icon;
             const isActive = activeSection === item.id;
             return (
@@ -159,7 +199,7 @@ function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <h2 className="text-2xl font-bold text-gray-900">
-                {sidebarItems.find(item => item.id === activeSection)?.label || 'Overview'}
+                {[...sidebarItemsMain, ...sidebarItemsSettings].find(item => item.id === activeSection)?.label || 'Overview'}
               </h2>
             </div>
             <div className="flex items-center space-x-3">
