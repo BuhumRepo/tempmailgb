@@ -34,9 +34,7 @@ function App() {
       if (DEMO_MODE) {
         // Demo mode: Generate random email client-side
         const randomString = Math.random().toString(36).substring(2, 12);
-        const domains = ['tempmail.com', 'disposable.email', 'quickmail.net'];
-        const domain = domains[Math.floor(Math.random() * domains.length)];
-        const email = `${randomString}@${domain}`;
+        const email = `${randomString}@ainewmail.online`;
         setCurrentEmail(email);
         setExpiresAt(Date.now() + 3600000); // 1 hour
         setInbox([]);
