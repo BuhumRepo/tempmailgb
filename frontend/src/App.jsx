@@ -16,6 +16,7 @@ function App() {
   const [expiresAt, setExpiresAt] = useState(null);
   const [viewMode, setViewMode] = useState('html'); // 'html' or 'plain'
   const [countdown, setCountdown] = useState(5); // Auto-refresh countdown
+  const [devMode, setDevMode] = useState(false); // Developer mode toggle
 
   // Auto-generate email on page load
   useEffect(() => {
@@ -261,6 +262,17 @@ function App() {
                   <span className="font-medium text-amber-700">Demo Mode</span>
                 </div>
               )}
+              <button
+                onClick={() => setDevMode(!devMode)}
+                className={`flex items-center space-x-2 px-4 py-2 font-medium rounded-lg transition-all text-sm ${
+                  devMode 
+                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                }`}
+              >
+                <Zap className="w-4 h-4" />
+                <span className="hidden sm:inline">Dev Mode</span>
+              </button>
               <a
                 href="/notemail"
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-all text-sm"
@@ -273,10 +285,205 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-[1400px] mx-auto px-6 py-8">
-        
-        {/* Email Generator - Shopify Style */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-8 mb-6">
+      {/* Developer Mode UI */}
+      {devMode ? (
+        <main className="min-h-screen bg-gray-900 text-green-400 font-mono">
+          <div className="max-w-[1400px] mx-auto px-6 py-8">
+            {/* Terminal Header */}
+            <div className="bg-gray-800 rounded-t-lg border border-gray-700 p-4 mb-0">
+              <div className="flex items-center space-x-2 mb-3">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <span className="text-gray-400 text-sm ml-4">tempmail-cli v1.0.0</span>
+              </div>
+              <div className="text-green-400 text-sm">
+                <span className="text-blue-400">user@tempmail</span>
+                <span className="text-white">:</span>
+                <span className="text-purple-400">~</span>
+                <span className="text-white">$ </span>
+                <span>./tempmail --generate</span>
+              </div>
+            </div>
+
+            {/* Terminal Content */}
+            <div className="bg-black rounded-b-lg border border-t-0 border-gray-700 p-6 mb-6">
+              {loading && !currentEmail ? (
+                <div className="space-y-2">
+                  <p className="text-yellow-400">[INFO] Generating temporary email address...</p>
+                  <p className="text-green-400 animate-pulse">█</p>
+                </div>
+              ) : currentEmail ? (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-blue-400">[SUCCESS] Email generated:</p>
+                    <div className="mt-2 bg-gray-900 border border-gray-700 rounded p-3 flex items-center justify-between">
+                      <code className="text-green-400 text-sm">{currentEmail}</code>
+                      <button
+                        onClick={copyToClipboard}
+                        className="px-3 py-1 bg-green-600 hover:bg-green-700 text-black rounded text-xs font-bold transition-all"
+                      >
+                        {copied ? '✓ COPIED' : 'COPY'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-800">
+                    <div className="bg-gray-900 border border-gray-700 rounded p-3">
+                      <p className="text-gray-500 text-xs mb-1">EXPIRES_IN</p>
+                      <p className="text-cyan-400 text-lg font-bold">3600s</p>
+                    </div>
+                    <div className="bg-gray-900 border border-gray-700 rounded p-3">
+                      <p className="text-gray-500 text-xs mb-1">EMAILS_RECEIVED</p>
+                      <p className="text-yellow-400 text-lg font-bold">{inbox.length}</p>
+                    </div>
+                    <div className="bg-gray-900 border border-gray-700 rounded p-3">
+                      <p className="text-gray-500 text-xs mb-1">AUTO_REFRESH</p>
+                      <p className="text-green-400 text-lg font-bold">{countdown}s</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex space-x-3">
+                    <button
+                      onClick={generateEmail}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-semibold transition-all"
+                    >
+                      $ ./tempmail --new
+                    </button>
+                    <button
+                      onClick={handleManualRefresh}
+                      className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-green-400 rounded text-sm font-semibold transition-all"
+                    >
+                      $ ./refresh
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Inbox Terminal */}
+            {currentEmail && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Email List */}
+                <div className="lg:col-span-1">
+                  <div className="bg-gray-800 rounded-t-lg border border-gray-700 p-3">
+                    <p className="text-green-400 text-sm font-bold">$ cat inbox.json</p>
+                  </div>
+                  <div className="bg-black rounded-b-lg border border-t-0 border-gray-700 p-4 max-h-[500px] overflow-y-auto">
+                    {inbox.length === 0 ? (
+                      <p className="text-gray-500 text-sm">{"{ \"emails\": [] }"}</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {inbox.map((email, index) => (
+                          <div
+                            key={email.id}
+                            onClick={() => markAsRead(email)}
+                            className={`p-3 rounded border cursor-pointer transition-all ${
+                              selectedEmail?.id === email.id
+                                ? 'bg-green-900/20 border-green-600'
+                                : 'bg-gray-900 border-gray-700 hover:border-gray-600'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-1">
+                              <span className="text-xs text-cyan-400">#{index + 1}</span>
+                              {!email.read && (
+                                <span className="text-xs text-yellow-400 font-bold">NEW</span>
+                              )}
+                            </div>
+                            <p className="text-sm text-green-400 font-semibold truncate mb-1">
+                              {email.subject}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">{email.from}</p>
+                            <p className="text-xs text-gray-600 mt-1">{formatTime(email.timestamp)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Email Content */}
+                <div className="lg:col-span-2">
+                  {selectedEmail ? (
+                    <div>
+                      <div className="bg-gray-800 rounded-t-lg border border-gray-700 p-3">
+                        <p className="text-green-400 text-sm font-bold">$ cat email_{selectedEmail.id}.json</p>
+                      </div>
+                      <div className="bg-black rounded-b-lg border border-t-0 border-gray-700 p-4">
+                        <div className="space-y-3 mb-4 pb-4 border-b border-gray-800">
+                          <div className="flex items-start">
+                            <span className="text-gray-500 text-xs font-mono w-24">subject:</span>
+                            <span className="text-yellow-400 text-sm flex-1">"{selectedEmail.subject}"</span>
+                          </div>
+                          <div className="flex items-start">
+                            <span className="text-gray-500 text-xs font-mono w-24">from:</span>
+                            <span className="text-cyan-400 text-sm flex-1">"{selectedEmail.from}"</span>
+                          </div>
+                          <div className="flex items-start">
+                            <span className="text-gray-500 text-xs font-mono w-24">timestamp:</span>
+                            <span className="text-purple-400 text-sm flex-1">{selectedEmail.timestamp}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 pt-2">
+                            <button
+                              onClick={() => setViewMode('plain')}
+                              className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
+                                viewMode === 'plain'
+                                  ? 'bg-green-600 text-black'
+                                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                              }`}
+                            >
+                              .txt
+                            </button>
+                            <button
+                              onClick={() => setViewMode('html')}
+                              className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
+                                viewMode === 'html'
+                                  ? 'bg-green-600 text-black'
+                                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                              }`}
+                            >
+                              .html
+                            </button>
+                            <button
+                              onClick={() => deleteEmail(selectedEmail.id)}
+                              className="ml-auto px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-semibold transition-all"
+                            >
+                              DELETE
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-gray-900 rounded border border-gray-700 p-4 max-h-[400px] overflow-y-auto">
+                          {viewMode === 'html' && selectedEmail.html_body ? (
+                            <div dangerouslySetInnerHTML={{ __html: selectedEmail.html_body }} 
+                                 className="text-gray-300 text-sm"
+                                 style={{ fontFamily: 'system-ui' }} />
+                          ) : (
+                            <pre className="text-green-400 text-sm whitespace-pre-wrap font-mono">
+                              {selectedEmail.body}
+                            </pre>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-black rounded-lg border border-gray-700 p-12 text-center">
+                      <p className="text-gray-600 text-sm font-mono">// Select an email to view content</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
+      ) : (
+        // Regular UI Mode
+        <main className="max-w-[1400px] mx-auto px-6 py-8">
+          
+          {/* Email Generator - Shopify Style */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-8 mb-6">
           {loading && !currentEmail ? (
             <div className="text-center py-12">
               <RefreshCw className="w-12 h-12 text-green-600 animate-spin mx-auto mb-4" />
@@ -555,9 +762,11 @@ function App() {
             </div>
           </div>
         )}
-      </main>
+        </main>
+      )}
 
-      {/* How to Use Section */}
+      {/* How to Use Section - Hidden in Dev Mode */}
+      {!devMode && (
       <section className="mt-16 bg-white py-16 border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -600,7 +809,10 @@ function App() {
           </div>
         </div>
       </section>
+      )}
 
+      {!devMode && (
+      <>
       {/* Why TempMail Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -740,6 +952,8 @@ function App() {
           </div>
         </div>
       </section>
+      </>
+      )}
 
       {/* Footer */}
       <footer className="mt-0 pb-12 border-t border-gray-200 bg-white">
