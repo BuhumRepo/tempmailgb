@@ -79,8 +79,9 @@ export default {
       }
 
       // Route: Mark email as read
-      if (pathname.startsWith('/api/read/') && request.method === 'POST') {
-        const emailId = pathname.split('/')[3];
+      if (pathname.match(/\/api\/email\/.*\/.*\/read/) && request.method === 'PUT') {
+        const parts = pathname.split('/');
+        const emailId = parts[parts.length - 2];
         return await handleMarkAsRead(env.DB, emailId);
       }
 
@@ -91,9 +92,9 @@ export default {
       }
 
       // Route: Simulate receiving email (for testing)
-      if (pathname === '/api/simulate' && request.method === 'POST') {
+      if (pathname === '/api/simulate-receive' && request.method === 'POST') {
         const body = await request.json();
-        return await handleSimulateEmail(env.DB, body.email);
+        return await handleSimulateEmail(env.DB, body.to);
       }
 
       // 404 Not Found
@@ -163,7 +164,7 @@ async function handleGetInbox(db, email) {
     'SELECT * FROM inbox WHERE email_address = ? ORDER BY timestamp DESC'
   ).bind(email).all();
 
-  return new Response(JSON.stringify(result.results || []), {
+  return new Response(JSON.stringify({ emails: result.results || [] }), {
     headers: corsHeaders
   });
 }
