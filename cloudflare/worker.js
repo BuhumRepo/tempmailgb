@@ -22,8 +22,24 @@ export default {
   // Email handler for incoming emails
   async email(message, env, ctx) {
     const to = message.to;
-    const from = message.from;
+    let from = message.from;
     const subject = message.headers.get('subject') || 'No Subject';
+    
+    // Try to get the original sender from headers (not bounce address)
+    const originalFrom = message.headers.get('from') || message.headers.get('reply-to');
+    if (originalFrom) {
+      // Parse "Name <email@domain.com>" format
+      const fromMatch = originalFrom.match(/(?:"?([^"]*)"?\s)?<?([^>]+)>?/);
+      if (fromMatch) {
+        const name = fromMatch[1]?.trim();
+        const email = fromMatch[2]?.trim();
+        if (name && email) {
+          from = `${name} <${email}>`;
+        } else if (email) {
+          from = email;
+        }
+      }
+    }
     
     // Extract email body using proper parsing
     let body = '';

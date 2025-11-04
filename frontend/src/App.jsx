@@ -452,12 +452,12 @@ function App() {
                       </div>
                       <div className="border-t border-gray-100"></div>
                       <div className="flex items-center space-x-3">
-                        <div className="flex items-center justify-center w-8 h-8 bg-green-100 rounded-full">
-                          <Mail className="w-4 h-4 text-green-600" />
+                        <div className="flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full">
+                          <AlertCircle className="w-4 h-4 text-purple-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">To</p>
-                          <p className="text-sm text-gray-900 font-mono truncate">{currentEmail}</p>
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Subject</p>
+                          <p className="text-sm text-gray-900 font-semibold truncate">{selectedEmail.subject}</p>
                         </div>
                       </div>
                     </div>
