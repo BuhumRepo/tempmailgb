@@ -147,6 +147,16 @@ function App() {
         console.error('Error marking email as read:', error);
       }
     }
+    
+    // Auto-detect view mode based on email content
+    if (email.html_body && email.html_body !== email.body.replace(/\n/g, '<br>')) {
+      // Has real HTML content (not just converted plain text)
+      setViewMode('html');
+    } else {
+      // Plain text email
+      setViewMode('plain');
+    }
+    
     setSelectedEmail(email);
   };
 
@@ -427,30 +437,32 @@ function App() {
                         <span className="text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-lg flex-1">{new Date(selectedEmail.timestamp).toLocaleString()}</span>
                       </div>
                     </div>
-                    {/* View Mode Toggle */}
-                    <div className="flex items-center justify-end space-x-2 px-6 py-2 bg-gray-50 border-t border-gray-200">
-                      <span className="text-xs text-gray-500">View:</span>
-                      <button
-                        onClick={() => setViewMode('html')}
-                        className={`px-3 py-1 text-xs rounded-md transition-all ${
-                          viewMode === 'html' 
-                            ? 'bg-blue-600 text-white font-medium' 
-                            : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-                        }`}
-                      >
-                        HTML
-                      </button>
-                      <button
-                        onClick={() => setViewMode('plain')}
-                        className={`px-3 py-1 text-xs rounded-md transition-all ${
-                          viewMode === 'plain' 
-                            ? 'bg-blue-600 text-white font-medium' 
-                            : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-                        }`}
-                      >
-                        Plain Text
-                      </button>
-                    </div>
+                    {/* View Mode Toggle - Only show if both HTML and plain text exist */}
+                    {selectedEmail.html_body && selectedEmail.html_body !== selectedEmail.body.replace(/\n/g, '<br>') && (
+                      <div className="flex items-center justify-end space-x-2 px-6 py-2 bg-gray-50 border-t border-gray-200">
+                        <span className="text-xs text-gray-500">View:</span>
+                        <button
+                          onClick={() => setViewMode('html')}
+                          className={`px-3 py-1 text-xs rounded-md transition-all ${
+                            viewMode === 'html' 
+                              ? 'bg-blue-600 text-white font-medium' 
+                              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                          }`}
+                        >
+                          HTML
+                        </button>
+                        <button
+                          onClick={() => setViewMode('plain')}
+                          className={`px-3 py-1 text-xs rounded-md transition-all ${
+                            viewMode === 'plain' 
+                              ? 'bg-blue-600 text-white font-medium' 
+                              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                          }`}
+                        >
+                          Plain Text
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 p-8 overflow-y-auto bg-white">
                     {viewMode === 'html' && selectedEmail.html_body ? (

@@ -30,81 +30,100 @@ export default {
     let htmlBody = '';
     
     try {
-      // Get both HTML and plain text versions
-      if (message.html) {
-        htmlBody = await message.html();
-        // Strip HTML tags to get plain text for body field
-        body = htmlBody
-          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-          .replace(/<br\s*\/?>/gi, '\n')
-          .replace(/<\/p>/gi, '\n\n')
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .replace(/&quot;/g, '"')
-          .replace(/\s+/g, ' ')
-          .trim();
-      } else if (message.text) {
-        body = await message.text();
-        htmlBody = body.replace(/\n/g, '<br>'); // Convert newlines to HTML
+      // Read raw email content
+      const reader = message.raw.getReader();
+      const decoder = new TextDecoder();
+      let rawEmail = '';
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        rawEmail += decoder.decode(value, { stream: true });
+      }
+      
+      console.log('Raw email length:', rawEmail.length);
+      
+      // Split headers from body
+      const headerBodySplit = rawEmail.split(/\r?\n\r?\n/);
+      if (headerBodySplit.length < 2) {
+        console.error('Could not split headers from body');
+        body = 'Unable to parse email content';
+        htmlBody = body;
       } else {
-        // Fallback: parse raw email
-        const reader = message.raw.getReader();
-        const decoder = new TextDecoder();
-        let rawEmail = '';
+        const emailBody = headerBodySplit.slice(1).join('\n\n');
         
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          rawEmail += decoder.decode(value, { stream: true });
+        // Check if it's a multipart email
+        const boundaryMatch = rawEmail.match(/boundary="?([^"\s;]+)"?/i);
+        
+        if (boundaryMatch) {
+          // Parse multipart email
+          const boundary = boundaryMatch[1];
+          const parts = emailBody.split(new RegExp(`--${boundary.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g'));
+          
+          console.log('Found', parts.length, 'parts');
+          
+          for (const part of parts) {
+            // Check for text/plain
+            if (part.includes('Content-Type: text/plain') && !body) {
+              const textMatch = part.split(/\r?\n\r?\n/);
+              if (textMatch.length > 1) {
+                body = textMatch.slice(1).join('\n\n').trim();
+                console.log('Found plain text, length:', body.length);
+              }
+            }
+            
+            // Check for text/html
+            if (part.includes('Content-Type: text/html') && !htmlBody) {
+              const htmlMatch = part.split(/\r?\n\r?\n/);
+              if (htmlMatch.length > 1) {
+                htmlBody = htmlMatch.slice(1).join('\n\n').trim();
+                console.log('Found HTML, length:', htmlBody.length);
+              }
+            }
+          }
+        } else {
+          // Single part email - use the body as-is
+          body = emailBody.trim();
+          console.log('Single part email, length:', body.length);
         }
         
-        // Extract body after double newline (end of headers)
-        const parts = rawEmail.split('\n\n');
-        if (parts.length > 1) {
-          // Get everything after headers
-          body = parts.slice(1).join('\n\n');
-          
-          // Remove email headers that might be in body
-          body = body
-            .replace(/^Received:.*$/gm, '')
-            .replace(/^ARC-.*$/gm, '')
-            .replace(/^DKIM-.*$/gm, '')
-            .replace(/^Authentication-Results:.*$/gm, '')
-            .replace(/^X-.*$/gm, '')
-            .replace(/^Content-Type:.*$/gm, '')
-            .replace(/^Content-Transfer-Encoding:.*$/gm, '')
-            .replace(/^MIME-Version:.*$/gm, '')
-            .replace(/^\s*from.*outbound-mail\.sendgrid\.net.*$/gm, '')
-            .replace(/^\s*by cloudflare.*$/gm, '')
-            .replace(/^\s*for.*$/gm, '')
+        // If we found HTML but no plain text, convert HTML to plain text
+        if (htmlBody && !body) {
+          body = htmlBody
+            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/<\/p>/gi, '\n\n')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&')
+            .replace(/&quot;/g, '"')
+            .replace(/\s+/g, ' ')
             .trim();
-          
-          // Remove multiple consecutive blank lines
-          body = body.replace(/\n{3,}/g, '\n\n');
-          
-          // Limit body length
-          if (body.length > 5000) {
-            body = body.substring(0, 5000) + '\n\n[Email truncated...]';
-          }
+        }
+        
+        // If we found plain text but no HTML, convert plain to HTML
+        if (body && !htmlBody) {
+          htmlBody = body.replace(/\n/g, '<br>');
         }
       }
       
-      // Clean up body
+      // Clean up
       body = body.trim() || 'No content';
       htmlBody = htmlBody.trim() || body.replace(/\n/g, '<br>');
+      
+      console.log('Final body length:', body.length, 'HTML length:', htmlBody.length);
       
       // Save email to database with both HTML and plain text
       await env.DB.prepare(
         'INSERT INTO inbox (email_address, from_address, subject, body, html_body, timestamp, read) VALUES (?, ?, ?, ?, ?, ?, 0)'
       ).bind(to, from, subject, body, htmlBody, Date.now()).run();
       
-      console.log(`Email received: ${from} -> ${to}`);
+      console.log(`Email saved: ${from} -> ${to}`);
     } catch (error) {
-      console.error('Error saving email:', error);
+      console.error('Error processing email:', error);
     }
   },
 
