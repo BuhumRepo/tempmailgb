@@ -508,7 +508,7 @@ function App() {
                   </div>
                   <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
                     {viewMode === 'html' && selectedEmail.html_body ? (
-                      <div className="max-w-4xl mx-auto">
+                      <div className="max-w-4xl">
                         <div 
                           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
                           style={{
@@ -524,15 +524,16 @@ function App() {
                               lineHeight: '1.6',
                               color: '#374151',
                               wordWrap: 'break-word',
-                              overflowWrap: 'break-word'
+                              overflowWrap: 'break-word',
+                              textAlign: 'left'
                             }}
                           />
                         </div>
                       </div>
                     ) : (
-                      <div className="max-w-4xl mx-auto">
+                      <div className="max-w-4xl">
                         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                          <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-base" style={{ fontFamily: 'monospace' }}>
+                          <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-base text-left" style={{ fontFamily: 'monospace' }}>
                             {selectedEmail.body}
                           </p>
                         </div>

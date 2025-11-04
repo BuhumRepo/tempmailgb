@@ -86,10 +86,12 @@ button:focus-visible {
   /* Reset email styles */
   max-width: 100% !important;
   width: 100% !important;
+  text-align: left !important;
 }
 
 .email-html-content * {
   max-width: 100% !important;
+  text-align: left !important;
 }
 
 .email-html-content table {
@@ -102,12 +104,13 @@ button:focus-visible {
   max-width: 100% !important;
   height: auto !important;
   display: block;
-  margin: 10px auto;
+  margin: 10px 0;
 }
 
 .email-html-content p {
   margin: 8px 0;
   line-height: 1.6;
+  text-align: left !important;
 }
 
 .email-html-content a {
@@ -118,6 +121,10 @@ button:focus-visible {
 
 .email-html-content a:hover {
   color: #1e40af;
+}
+
+.email-html-content div {
+  text-align: left !important;
 }
 
 /* Override weird email background colors for better readability */
