@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteMail - Self-Destructing Email Sharing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #faf5ff 0%, #fce7f3 50%, #fef2f2 100%);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .gradient-button {
+      background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%);
+    }
+    
+    .gradient-button:hover {
+      background: linear-gradient(135deg, #7e22ce 0%, #db2777 100%);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen">
+  
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="gradient-button p-2.5 rounded-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold gradient-text">NoteMail</h1>
+            <p class="text-xs text-gray-500">Self-Destructing Email Sharing</p>
+          </div>
+        </div>
+        <a href="/" class="text-sm text-gray-600 hover:text-gray-900 font-medium">
+          ← Back to TempMail
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+    
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center space-x-2 bg-purple-100 border border-purple-200 rounded-full px-4 py-2 mb-6">
+        <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+        </svg>
+        <span class="text-sm text-purple-700 font-semibold">Secure & Private</span>
+      </div>
+      
+      <h2 class="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+        Share Emails That
+        <span class="block gradient-text mt-2">Self-Destruct</span>
+      </h2>
+      
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+        Turn any email into a secure, one-time-view note. Share sensitive information that automatically destroys itself after being read.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/" class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white gradient-button rounded-lg shadow-lg hover:shadow-xl transition-all">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Go to TempMail
+        </a>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+      <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4 float-animation">
+          <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Self-Destruct</h3>
+        <p class="text-gray-600">
+          Notes automatically destroy after being read once. No trace left behind. Perfect for sensitive information.
+        </p>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div class="w-14 h-14 bg-pink-100 rounded-xl flex items-center justify-center mb-4 float-animation" style="animation-delay: 0.2s;">
+          <svg class="w-7 h-7 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">End-to-End Encrypted</h3>
+        <p class="text-gray-600">
+          Military-grade AES-256 encryption. Even we can't read your notes. Complete privacy guaranteed.
+        </p>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-4 float-animation" style="animation-delay: 0.4s;">
+          <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Anonymous Replies</h3>
+        <p class="text-gray-600">
+          Recipients can reply back to your TempMail inbox anonymously. Two-way communication without exposing emails.
+        </p>
+      </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="bg-white rounded-3xl p-12 border border-gray-200 shadow-lg mb-16">
+      <h3 class="text-3xl font-bold text-gray-900 mb-8 text-center">How It Works</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-purple-600">1</span>
+          </div>
+          <h4 class="font-bold text-gray-900 mb-2">Receive Email</h4>
+          <p class="text-sm text-gray-600">Get an email in your TempMail inbox from any source</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-pink-600">2</span>
+          </div>
+          <h4 class="font-bold text-gray-900 mb-2">Share as NoteMail</h4>
+          <p class="text-sm text-gray-600">Click the share button to create a self-destructing link</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-red-600">3</span>
+          </div>
+          <h4 class="font-bold text-gray-900 mb-2">Recipient Views</h4>
+          <p class="text-sm text-gray-600">They see the email once, then it's destroyed forever</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-orange-600">4</span>
+          </div>
+          <h4 class="font-bold text-gray-900 mb-2">Get Reply</h4>
+          <p class="text-sm text-gray-600">They can reply back to your TempMail inbox</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-12 text-white">
+      <h3 class="text-3xl font-bold mb-4">Ready to Share Securely?</h3>
+      <p class="text-lg mb-8 opacity-90">Start with TempMail to receive and share emails that self-destruct</p>
+      <a href="/" class="inline-flex items-center px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition-all shadow-lg">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        Get Started with TempMail
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-16 pb-8 border-t border-gray-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 pt-8 text-center">
+      <p class="text-sm text-gray-600">
+        <strong>NoteMail</strong> - Secure, self-destructing email sharing powered by TempMail
+      </p>
+      <p class="text-xs text-gray-500 mt-2">
+        All notes are end-to-end encrypted and automatically destroyed after being read.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

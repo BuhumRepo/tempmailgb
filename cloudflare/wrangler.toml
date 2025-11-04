@@ -1,0 +1,23 @@
+name = "tempmail-worker"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "tempmail-db"
+database_id = "YOUR_DATABASE_ID_HERE"  # Replace after creating D1 database
+
+# Environment variables (optional)
+[vars]
+ENVIRONMENT = "production"
+
+# Development configuration
+[env.development]
+name = "tempmail-worker-dev"
+
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "tempmail-db-dev"
+database_id = "YOUR_DEV_DATABASE_ID_HERE"

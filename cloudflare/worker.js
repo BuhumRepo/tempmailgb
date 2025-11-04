@@ -1,0 +1,249 @@
+/**
+ * TempMail Cloudflare Worker
+ * Serverless backend for temporary email service
+ */
+
+// CORS headers for all responses
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Content-Type': 'application/json',
+};
+
+// Generate random email address
+function generateEmail() {
+  const randomStr = Math.random().toString(36).substring(2, 12);
+  const domains = [
+    'tempmail.com',
+    'quickmail.net',
+    'disposable.email',
+    'student.edu',
+    'university.edu',
+    'college.edu'
+  ];
+  const domain = domains[Math.floor(Math.random() * domains.length)];
+  return `${randomStr}@${domain}`;
+}
+
+// Main Worker handler
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const { pathname } = url;
+
+    // Handle CORS preflight requests
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: corsHeaders
+      });
+    }
+
+    try {
+      // Clean up expired emails (run in background)
+      ctx.waitUntil(cleanupExpiredEmails(env.DB));
+
+      // Route: Generate new email
+      if (pathname === '/api/generate' && request.method === 'POST') {
+        return await handleGenerateEmail(env.DB);
+      }
+
+      // Route: Get inbox for email
+      if (pathname.startsWith('/api/inbox/') && request.method === 'GET') {
+        const email = decodeURIComponent(pathname.split('/')[3]);
+        return await handleGetInbox(env.DB, email);
+      }
+
+      // Route: Mark email as read
+      if (pathname.startsWith('/api/read/') && request.method === 'POST') {
+        const emailId = pathname.split('/')[3];
+        return await handleMarkAsRead(env.DB, emailId);
+      }
+
+      // Route: Delete email
+      if (pathname.startsWith('/api/delete/') && request.method === 'DELETE') {
+        const emailId = pathname.split('/')[3];
+        return await handleDeleteEmail(env.DB, emailId);
+      }
+
+      // Route: Simulate receiving email (for testing)
+      if (pathname === '/api/simulate' && request.method === 'POST') {
+        const body = await request.json();
+        return await handleSimulateEmail(env.DB, body.email);
+      }
+
+      // 404 Not Found
+      return new Response(JSON.stringify({ error: 'Not Found' }), {
+        status: 404,
+        headers: corsHeaders
+      });
+
+    } catch (error) {
+      console.error('Worker error:', error);
+      return new Response(JSON.stringify({ 
+        error: 'Internal Server Error',
+        message: error.message 
+      }), {
+        status: 500,
+        headers: corsHeaders
+      });
+    }
+  }
+};
+
+// Handler: Generate new email
+async function handleGenerateEmail(db) {
+  const email = generateEmail();
+  const now = Date.now();
+  const expiresAt = now + (60 * 60 * 1000); // 1 hour
+
+  try {
+    // Insert new email into database
+    await db.prepare(
+      'INSERT INTO emails (address, created_at, expires_at) VALUES (?, ?, ?)'
+    ).bind(email, now, expiresAt).run();
+
+    return new Response(JSON.stringify({
+      email,
+      expiresIn: 3600000 // 1 hour in milliseconds
+    }), {
+      headers: corsHeaders
+    });
+  } catch (error) {
+    // If email already exists, generate a new one
+    if (error.message.includes('UNIQUE constraint')) {
+      return handleGenerateEmail(db);
+    }
+    throw error;
+  }
+}
+
+// Handler: Get inbox for email
+async function handleGetInbox(db, email) {
+  // Check if email exists and is not expired
+  const emailRecord = await db.prepare(
+    'SELECT * FROM emails WHERE address = ? AND expires_at > ?'
+  ).bind(email, Date.now()).first();
+
+  if (!emailRecord) {
+    return new Response(JSON.stringify({ 
+      error: 'Email not found or expired' 
+    }), {
+      status: 404,
+      headers: corsHeaders
+    });
+  }
+
+  // Get all emails in inbox
+  const result = await db.prepare(
+    'SELECT * FROM inbox WHERE email_address = ? ORDER BY timestamp DESC'
+  ).bind(email).all();
+
+  return new Response(JSON.stringify(result.results || []), {
+    headers: corsHeaders
+  });
+}
+
+// Handler: Mark email as read
+async function handleMarkAsRead(db, emailId) {
+  await db.prepare(
+    'UPDATE inbox SET read = 1 WHERE id = ?'
+  ).bind(emailId).run();
+
+  return new Response(JSON.stringify({ success: true }), {
+    headers: corsHeaders
+  });
+}
+
+// Handler: Delete email
+async function handleDeleteEmail(db, emailId) {
+  await db.prepare(
+    'DELETE FROM inbox WHERE id = ?'
+  ).bind(emailId).run();
+
+  return new Response(JSON.stringify({ success: true }), {
+    headers: corsHeaders
+  });
+}
+
+// Handler: Simulate receiving email (for testing)
+async function handleSimulateEmail(db, email) {
+  // Check if email exists
+  const emailRecord = await db.prepare(
+    'SELECT * FROM emails WHERE address = ? AND expires_at > ?'
+  ).bind(email, Date.now()).first();
+
+  if (!emailRecord) {
+    return new Response(JSON.stringify({ 
+      error: 'Email not found or expired' 
+    }), {
+      status: 404,
+      headers: corsHeaders
+    });
+  }
+
+  // Generate random demo email
+  const subjects = [
+    'Welcome to Our Service!',
+    'Verify Your Email Address',
+    'Your Verification Code',
+    'Account Confirmation Required',
+    'Complete Your Registration'
+  ];
+
+  const bodies = [
+    'Thank you for signing up! Please verify your email address by clicking the link below.',
+    'Your verification code is: 123456. This code will expire in 10 minutes.',
+    'Welcome! To complete your registration, please confirm your email address.',
+    'Your account has been created successfully. Click here to get started.',
+    'Please verify your email to activate your account and access all features.'
+  ];
+
+  const from = `noreply@${['example.com', 'service.com', 'app.io', 'platform.net'][Math.floor(Math.random() * 4)]}`;
+  const subject = subjects[Math.floor(Math.random() * subjects.length)];
+  const body = bodies[Math.floor(Math.random() * bodies.length)];
+
+  // Insert simulated email
+  const result = await db.prepare(
+    'INSERT INTO inbox (email_address, from_address, subject, body, timestamp, read) VALUES (?, ?, ?, ?, ?, 0)'
+  ).bind(email, from, subject, body, Date.now()).run();
+
+  // Get the inserted email
+  const newEmail = await db.prepare(
+    'SELECT * FROM inbox WHERE id = ?'
+  ).bind(result.meta.last_row_id).first();
+
+  return new Response(JSON.stringify(newEmail), {
+    headers: corsHeaders
+  });
+}
+
+// Background task: Clean up expired emails
+async function cleanupExpiredEmails(db) {
+  try {
+    const now = Date.now();
+    
+    // Get expired email addresses
+    const expiredEmails = await db.prepare(
+      'SELECT address FROM emails WHERE expires_at <= ?'
+    ).bind(now).all();
+
+    if (expiredEmails.results && expiredEmails.results.length > 0) {
+      // Delete inbox entries for expired emails
+      for (const email of expiredEmails.results) {
+        await db.prepare(
+          'DELETE FROM inbox WHERE email_address = ?'
+        ).bind(email.address).run();
+      }
+
+      // Delete expired email records
+      await db.prepare(
+        'DELETE FROM emails WHERE expires_at <= ?'
+      ).bind(now).run();
+
+      console.log(`Cleaned up ${expiredEmails.results.length} expired emails`);
+    }
+  } catch (error) {
+    console.error('Cleanup error:', error);
+  }
+}
