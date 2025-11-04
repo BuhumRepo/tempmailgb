@@ -1076,10 +1076,10 @@ ${selectedEmail.html_body || selectedEmail.body}`}
           ) : currentEmail ? (
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Your temporary email address</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Your temporary email address</label>
                 <div className="relative">
-                  <div className="flex items-center space-x-3 bg-gray-50/50 border border-gray-300 hover:border-gray-400 p-3.5 rounded-xl focus-within:border-green-600 focus-within:ring-4 focus-within:ring-green-100 transition-all group">
-                    <Mail className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  <div className="flex items-center space-x-2.5 bg-gray-50/50 border border-gray-300 hover:border-gray-400 p-2.5 rounded-xl focus-within:border-green-600 focus-within:ring-4 focus-within:ring-green-100 transition-all group">
+                    <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
                     <input
                       type="text"
                       value={currentEmail}
@@ -1088,7 +1088,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                     />
                     <button
                       onClick={copyToClipboard}
-                      className="flex-shrink-0 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center space-x-2"
+                      className="flex-shrink-0 px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center space-x-2"
                       title="Copy to clipboard"
                     >
                       {copied ? (
