@@ -1076,7 +1076,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
           ) : currentEmail ? (
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Your temporary email address</label>
+                <h1 className="text-2xl font-bold text-gray-900 mb-3">Your temporary email address</h1>
                 <div className="relative">
                   <div className="flex items-center space-x-2.5 bg-gray-50/50 border border-gray-300 hover:border-gray-400 p-2.5 rounded-xl focus-within:border-green-600 focus-within:ring-4 focus-within:ring-green-100 transition-all group">
                     <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
