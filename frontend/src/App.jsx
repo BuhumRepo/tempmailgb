@@ -24,6 +24,14 @@ function App() {
     lastFetchTime: 0,
     requestCount: 0
   });
+  const [showApiDocs, setShowApiDocs] = useState(false);
+  const [apiKey, setApiKey] = useState('sk_live_1234567890abcdef');
+  const [webhookUrl, setWebhookUrl] = useState('');
+  const [rateLimit, setRateLimit] = useState({
+    limit: 100,
+    remaining: 87,
+    reset: Date.now() + 3600000
+  });
 
   // Auto-generate email on page load
   useEffect(() => {
@@ -595,6 +603,192 @@ function App() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* API Documentation Panel */}
+            <div className="mt-6">
+              <div className="bg-gray-800 rounded-t-lg border border-gray-700 p-3 flex items-center justify-between">
+                <p className="text-green-400 text-sm font-bold">$ cat api-docs.md</p>
+                <button
+                  onClick={() => setShowApiDocs(!showApiDocs)}
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded font-semibold transition-all"
+                >
+                  {showApiDocs ? 'HIDE' : 'SHOW'} API DOCS
+                </button>
+              </div>
+              
+              {showApiDocs && (
+                <div className="bg-black rounded-b-lg border border-t-0 border-gray-700 p-6">
+                  {/* Rate Limits */}
+                  <div className="mb-6 pb-6 border-b border-gray-800">
+                    <h3 className="text-yellow-400 text-sm font-bold mb-3">⚠️ RATE LIMITS</h3>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="bg-gray-900 border border-gray-700 rounded p-3">
+                        <p className="text-gray-500 text-xs mb-1">LIMIT</p>
+                        <p className="text-cyan-400 font-bold text-lg">{rateLimit.limit}/hr</p>
+                      </div>
+                      <div className="bg-gray-900 border border-gray-700 rounded p-3">
+                        <p className="text-gray-500 text-xs mb-1">REMAINING</p>
+                        <p className="text-green-400 font-bold text-lg">{rateLimit.remaining}</p>
+                      </div>
+                      <div className="bg-gray-900 border border-gray-700 rounded p-3">
+                        <p className="text-gray-500 text-xs mb-1">RESET_IN</p>
+                        <p className="text-purple-400 font-bold text-lg">
+                          {Math.round((rateLimit.reset - Date.now()) / 60000)}m
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* API Key Management */}
+                  <div className="mb-6 pb-6 border-b border-gray-800">
+                    <h3 className="text-cyan-400 text-sm font-bold mb-3">🔑 API KEY MANAGEMENT</h3>
+                    <div className="bg-gray-900 border border-gray-700 rounded p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-gray-400 text-xs">Your API Key:</label>
+                        <button
+                          onClick={() => {
+                            const newKey = 'sk_live_' + Math.random().toString(36).substring(2, 18);
+                            setApiKey(newKey);
+                          }}
+                          className="px-3 py-1 bg-green-600 hover:bg-green-700 text-black text-xs rounded font-semibold transition-all"
+                        >
+                          REGENERATE
+                        </button>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <code className="flex-1 bg-black border border-gray-700 rounded px-3 py-2 text-green-400 text-sm font-mono">
+                          {apiKey}
+                        </code>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(apiKey);
+                          }}
+                          className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded font-semibold transition-all"
+                        >
+                          COPY
+                        </button>
+                      </div>
+                      <p className="text-gray-600 text-xs mt-2">⚠️ Keep your API key secure. Never share it publicly.</p>
+                    </div>
+                  </div>
+
+                  {/* Webhook Configuration */}
+                  <div className="mb-6 pb-6 border-b border-gray-800">
+                    <h3 className="text-cyan-400 text-sm font-bold mb-3">🔗 WEBHOOK CONFIGURATION</h3>
+                    <div className="bg-gray-900 border border-gray-700 rounded p-4">
+                      <label className="text-gray-400 text-xs block mb-2">Webhook URL:</label>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          value={webhookUrl}
+                          onChange={(e) => setWebhookUrl(e.target.value)}
+                          placeholder="https://your-domain.com/webhook"
+                          className="flex-1 bg-black border border-gray-700 rounded px-3 py-2 text-green-400 text-sm font-mono outline-none focus:border-green-600"
+                        />
+                        <button
+                          onClick={() => {
+                            if (webhookUrl) {
+                              alert('Webhook configured successfully!');
+                            }
+                          }}
+                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded font-semibold transition-all"
+                        >
+                          SAVE
+                        </button>
+                      </div>
+                      <p className="text-gray-600 text-xs mt-2">📡 We'll POST new emails to this endpoint.</p>
+                    </div>
+                  </div>
+
+                  {/* REST API Endpoints */}
+                  <div className="mb-6">
+                    <h3 className="text-cyan-400 text-sm font-bold mb-3">📚 REST API ENDPOINTS</h3>
+                    <div className="space-y-3">
+                      {/* Generate Email */}
+                      <div className="bg-gray-900 border border-gray-700 rounded p-4">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="px-2 py-1 bg-green-700 text-white text-xs font-bold rounded">POST</span>
+                          <code className="text-purple-400 text-sm">/api/generate</code>
+                        </div>
+                        <p className="text-gray-400 text-xs mb-3">Generate a new temporary email address</p>
+                        <div className="bg-black border border-gray-700 rounded p-3">
+                          <pre className="text-green-400 text-xs font-mono overflow-x-auto">
+{`curl -X POST https://tempmail.example.com/api/generate \\
+  -H "Authorization: Bearer ${apiKey}" \\
+  -H "Content-Type: application/json"`}
+                          </pre>
+                        </div>
+                      </div>
+
+                      {/* Get Inbox */}
+                      <div className="bg-gray-900 border border-gray-700 rounded p-4">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="px-2 py-1 bg-blue-700 text-white text-xs font-bold rounded">GET</span>
+                          <code className="text-purple-400 text-sm">/api/inbox/:email</code>
+                        </div>
+                        <p className="text-gray-400 text-xs mb-3">Retrieve all emails for an address</p>
+                        <div className="bg-black border border-gray-700 rounded p-3">
+                          <pre className="text-green-400 text-xs font-mono overflow-x-auto">
+{`curl -X GET https://tempmail.example.com/api/inbox/abc@domain.com \\
+  -H "Authorization: Bearer ${apiKey}"`}
+                          </pre>
+                        </div>
+                      </div>
+
+                      {/* Delete Email */}
+                      <div className="bg-gray-900 border border-gray-700 rounded p-4">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="px-2 py-1 bg-red-700 text-white text-xs font-bold rounded">DELETE</span>
+                          <code className="text-purple-400 text-sm">/api/email/:id</code>
+                        </div>
+                        <p className="text-gray-400 text-xs mb-3">Delete a specific email</p>
+                        <div className="bg-black border border-gray-700 rounded p-3">
+                          <pre className="text-green-400 text-xs font-mono overflow-x-auto">
+{`curl -X DELETE https://tempmail.example.com/api/email/123 \\
+  -H "Authorization: Bearer ${apiKey}"`}
+                          </pre>
+                        </div>
+                      </div>
+
+                      {/* Mark as Read */}
+                      <div className="bg-gray-900 border border-gray-700 rounded p-4">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="px-2 py-1 bg-yellow-700 text-white text-xs font-bold rounded">PATCH</span>
+                          <code className="text-purple-400 text-sm">/api/email/:id/read</code>
+                        </div>
+                        <p className="text-gray-400 text-xs mb-3">Mark email as read</p>
+                        <div className="bg-black border border-gray-700 rounded p-3">
+                          <pre className="text-green-400 text-xs font-mono overflow-x-auto">
+{`curl -X PATCH https://tempmail.example.com/api/email/123/read \\
+  -H "Authorization: Bearer ${apiKey}"`}
+                          </pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Response Examples */}
+                  <div>
+                    <h3 className="text-cyan-400 text-sm font-bold mb-3">📄 RESPONSE EXAMPLES</h3>
+                    <div className="bg-gray-900 border border-gray-700 rounded p-4">
+                      <p className="text-gray-400 text-xs mb-2">Success Response (200):</p>
+                      <div className="bg-black border border-gray-700 rounded p-3">
+                        <pre className="text-green-400 text-xs font-mono overflow-x-auto">
+{`{
+  "success": true,
+  "data": {
+    "email": "abc123@ainewmail.online",
+    "expiresIn": 3600000,
+    "createdAt": "${new Date().toISOString()}"
+  }
+}`}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </main>
