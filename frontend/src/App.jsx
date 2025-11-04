@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Copy, RefreshCw, Trash2, Clock, Check, Inbox, Shield, Zap, Download, ExternalLink, ChevronRight, HelpCircle, Lock, UserCheck, AlertCircle, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+// Use environment variable or fallback to demo mode
+const API_URL = import.meta.env.VITE_API_URL || null;
+const DEMO_MODE = !API_URL; // If no API URL, use demo mode
 
 function App() {
   const [showLanding, setShowLanding] = useState(true);
@@ -29,12 +31,25 @@ function App() {
   const generateEmail = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${API_URL}/generate`);
-      setCurrentEmail(response.data.email);
-      setExpiresAt(Date.now() + response.data.expiresIn);
-      setInbox([]);
-      setSelectedEmail(null);
-      setShowLanding(false);
+      if (DEMO_MODE) {
+        // Demo mode: Generate random email client-side
+        const randomString = Math.random().toString(36).substring(2, 12);
+        const domains = ['tempmail.com', 'disposable.email', 'quickmail.net'];
+        const domain = domains[Math.floor(Math.random() * domains.length)];
+        const email = `${randomString}@${domain}`;
+        setCurrentEmail(email);
+        setExpiresAt(Date.now() + 3600000); // 1 hour
+        setInbox([]);
+        setSelectedEmail(null);
+        setShowLanding(false);
+      } else {
+        const response = await axios.post(`${API_URL}/generate`);
+        setCurrentEmail(response.data.email);
+        setExpiresAt(Date.now() + response.data.expiresIn);
+        setInbox([]);
+        setSelectedEmail(null);
+        setShowLanding(false);
+      }
     } catch (error) {
       console.error('Error generating email:', error);
     } finally {
@@ -45,8 +60,13 @@ function App() {
   const fetchInbox = async () => {
     if (!currentEmail) return;
     try {
-      const response = await axios.get(`${API_URL}/inbox/${currentEmail}`);
-      setInbox(response.data.emails);
+      if (DEMO_MODE) {
+        // Demo mode: Inbox is managed client-side
+        return;
+      } else {
+        const response = await axios.get(`${API_URL}/inbox/${currentEmail}`);
+        setInbox(response.data.emails);
+      }
     } catch (error) {
       console.error('Error fetching inbox:', error);
     }
@@ -60,7 +80,9 @@ function App() {
 
   const deleteEmail = async (emailId) => {
     try {
-      await axios.delete(`${API_URL}/delete/${emailId}`);
+      if (!DEMO_MODE) {
+        await axios.delete(`${API_URL}/delete/${emailId}`);
+      }
       setInbox(inbox.filter(email => email.id !== emailId));
       if (selectedEmail?.id === emailId) {
         setSelectedEmail(null);
@@ -105,7 +127,14 @@ function App() {
   const markAsRead = async (email) => {
     if (!email.read) {
       try {
-        await axios.put(`${API_URL}/email/${currentEmail}/${email.id}/read`);
+        if (!DEMO_MODE) {
+          await axios.put(`${API_URL}/email/${currentEmail}/${email.id}/read`);
+        } else {
+          // Demo mode: Mark as read locally
+          setInbox(prev => prev.map(e => 
+            e.id === email.id ? { ...e, read: true } : e
+          ));
+        }
       } catch (error) {
         console.error('Error marking email as read:', error);
       }
@@ -116,13 +145,38 @@ function App() {
   const simulateEmail = async () => {
     if (!currentEmail) return;
     try {
-      await axios.post(`${API_URL}/simulate-receive`, {
-        to: currentEmail,
-        from: 'demo@example.com',
-        subject: 'Welcome to TempMail!',
-        body: 'This is a demo email to show how the temporary email system works. In production, this would receive real emails from external sources.'
-      });
-      fetchInbox();
+      if (DEMO_MODE) {
+        // Demo mode: Generate demo email client-side
+        const demoEmails = [
+          {
+            id: Date.now().toString(),
+            from: 'welcome@tempmail.com',
+            subject: 'Welcome to TempMail! 🎉',
+            body: 'Thank you for using TempMail! This is a demo email showing how our temporary email service works.\n\nYour temporary email address is active and ready to receive messages. Use it anywhere you need a disposable email address.\n\nFeatures:\n• Instant email generation\n• No registration required\n• Automatic expiration after 1 hour\n• Complete privacy protection\n\nEnjoy using TempMail!',
+            timestamp: Date.now(),
+            read: false
+          },
+          {
+            id: (Date.now() + 1).toString(),
+            from: 'verify@service.com',
+            subject: 'Email Verification Code',
+            body: 'Your verification code is: 742691\n\nThis code will expire in 10 minutes.\n\nIf you didn\'t request this code, please ignore this email.',
+            timestamp: Date.now(),
+            read: false
+          }
+        ];
+        
+        const randomEmail = demoEmails[Math.floor(Math.random() * demoEmails.length)];
+        setInbox(prev => [randomEmail, ...prev]);
+      } else {
+        await axios.post(`${API_URL}/simulate-receive`, {
+          to: currentEmail,
+          from: 'demo@example.com',
+          subject: 'Welcome to TempMail!',
+          body: 'This is a demo email to show how the temporary email system works. In production, this would receive real emails from external sources.'
+        });
+        fetchInbox();
+      }
     } catch (error) {
       console.error('Error simulating email:', error);
     }
@@ -155,6 +209,12 @@ function App() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {DEMO_MODE && (
+                <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-yellow-100 border border-yellow-300 rounded-lg text-sm">
+                  <AlertCircle className="w-4 h-4 text-yellow-600" />
+                  <span className="font-medium text-yellow-700">Demo Mode</span>
+                </div>
+              )}
               <button
                 onClick={() => window.location.href = '/notemail'}
                 className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all shadow-sm"
