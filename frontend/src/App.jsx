@@ -488,20 +488,36 @@ function App() {
                       </div>
                     )}
                   </div>
-                  <div className="flex-1 p-8 overflow-y-auto bg-white">
+                  <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
                     {viewMode === 'html' && selectedEmail.html_body ? (
-                      <div 
-                        className="email-content prose max-w-none"
-                        dangerouslySetInnerHTML={{ __html: selectedEmail.html_body }}
-                        style={{
-                          fontFamily: 'Arial, sans-serif',
-                          lineHeight: '1.6',
-                          color: '#333'
-                        }}
-                      />
+                      <div className="max-w-4xl mx-auto">
+                        <div 
+                          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                          style={{
+                            minHeight: '200px'
+                          }}
+                        >
+                          <div 
+                            className="email-html-content"
+                            dangerouslySetInnerHTML={{ __html: selectedEmail.html_body }}
+                            style={{
+                              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                              fontSize: '14px',
+                              lineHeight: '1.6',
+                              color: '#374151',
+                              wordWrap: 'break-word',
+                              overflowWrap: 'break-word'
+                            }}
+                          />
+                        </div>
+                      </div>
                     ) : (
-                      <div className="prose max-w-none">
-                        <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-base">{selectedEmail.body}</p>
+                      <div className="max-w-4xl mx-auto">
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                          <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-base" style={{ fontFamily: 'monospace' }}>
+                            {selectedEmail.body}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
