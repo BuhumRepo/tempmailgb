@@ -29,8 +29,22 @@ export default {
     let body = '';
     
     try {
-      // Try to get text/plain content first
-      if (message.text) {
+      // Try to get HTML content first, then fall back to text
+      if (message.html) {
+        const htmlContent = await message.html();
+        // Strip HTML tags to get plain text
+        body = htmlContent
+          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/\s+/g, ' ')
+          .trim();
+      } else if (message.text) {
         body = await message.text();
       } else {
         // Fallback: parse raw email
