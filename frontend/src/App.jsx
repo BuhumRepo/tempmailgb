@@ -63,7 +63,16 @@ function App() {
         return;
       } else {
         const response = await axios.get(`${API_URL}/inbox/${currentEmail}`);
-        setInbox(response.data.emails);
+        const newEmails = response.data.emails;
+        setInbox(newEmails);
+        
+        // If there's a selected email, update it with fresh data
+        if (selectedEmail) {
+          const updatedEmail = newEmails.find(email => email.id === selectedEmail.id);
+          if (updatedEmail) {
+            setSelectedEmail(updatedEmail);
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching inbox:', error);
