@@ -15,17 +15,38 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [expiresAt, setExpiresAt] = useState(null);
   const [viewMode, setViewMode] = useState('html'); // 'html' or 'plain'
+  const [countdown, setCountdown] = useState(5); // Auto-refresh countdown
 
   // Auto-generate email on page load
   useEffect(() => {
     generateEmail();
   }, []);
 
+  // Auto-refresh inbox with countdown timer
   useEffect(() => {
     if (currentEmail) {
       fetchInbox();
-      const interval = setInterval(fetchInbox, 5000); // Poll every 5 seconds
-      return () => clearInterval(interval);
+      setCountdown(5);
+      
+      // Countdown timer that ticks every second
+      const countdownInterval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            return 5; // Reset to 5
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      
+      // Refresh inbox every 5 seconds
+      const refreshInterval = setInterval(() => {
+        fetchInbox();
+      }, 5000);
+      
+      return () => {
+        clearInterval(countdownInterval);
+        clearInterval(refreshInterval);
+      };
     }
   }, [currentEmail]);
 
@@ -78,6 +99,12 @@ function App() {
     } catch (error) {
       console.error('Error fetching inbox:', error);
     }
+  };
+
+  // Manual refresh handler - resets countdown
+  const handleManualRefresh = () => {
+    setCountdown(5);
+    fetchInbox();
   };
 
   const copyToClipboard = () => {
@@ -339,13 +366,41 @@ function App() {
                   <h3 className="font-semibold text-base text-gray-900">Inbox</h3>
                   <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">{inbox.length}</span>
                 </div>
-                <button
-                  onClick={fetchInbox}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-all"
-                  title="Refresh inbox"
-                >
-                  <RefreshCw className="w-4 h-4 text-gray-600" />
-                </button>
+                <div className="flex items-center space-x-3">
+                  {/* Auto-refresh countdown timer */}
+                  <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="relative flex items-center justify-center w-4 h-4">
+                      <svg className="absolute transform -rotate-90" width="16" height="16">
+                        <circle
+                          cx="8"
+                          cy="8"
+                          r="6"
+                          fill="none"
+                          stroke="#d1fae5"
+                          strokeWidth="2"
+                        />
+                        <circle
+                          cx="8"
+                          cy="8"
+                          r="6"
+                          fill="none"
+                          stroke="#16a34a"
+                          strokeWidth="2"
+                          strokeDasharray={`${(countdown / 5) * 37.7} 37.7`}
+                          className="transition-all duration-1000 ease-linear"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-semibold text-green-700 tabular-nums">{countdown}s</span>
+                  </div>
+                  <button
+                    onClick={handleManualRefresh}
+                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-all"
+                    title="Refresh now"
+                  >
+                    <RefreshCw className="w-4 h-4 text-gray-600" />
+                  </button>
+                </div>
               </div>
 
               <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
