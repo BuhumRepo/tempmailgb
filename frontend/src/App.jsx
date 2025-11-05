@@ -395,21 +395,22 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Header - Shopify Style */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200/60 sticky top-0 z-50">
-        <div className="px-6 py-4">
+        <div className="px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-green-600 to-green-700 p-2 rounded-xl shadow-sm">
-                <Mail className="w-7 h-7 text-white" />
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="bg-gradient-to-br from-green-600 to-green-700 p-1.5 sm:p-2 rounded-lg sm:rounded-xl shadow-sm">
+                <Mail className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">TempMail</h1>
+                <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">TempMail</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {DEMO_MODE && (
-                <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-sm">
-                  <AlertCircle className="w-4 h-4 text-amber-600" />
-                  <span className="font-medium text-amber-700">Demo Mode</span>
+                <div className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-amber-50 border border-amber-200 rounded-md sm:rounded-lg text-xs sm:text-sm">
+                  <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4 text-amber-600" />
+                  <span className="font-medium text-amber-700 hidden xs:inline">Demo</span>
+                  <span className="font-medium text-amber-700 hidden sm:inline">Mode</span>
                 </div>
               )}
               
@@ -417,13 +418,13 @@ function App() {
                 <>
                   <button
                     onClick={() => { setShowAuth(true); setAuthMode('login'); }}
-                    className="text-gray-700 hover:text-gray-900 font-medium text-sm transition-all"
+                    className="text-gray-700 hover:text-gray-900 font-medium text-xs sm:text-sm transition-all px-2 sm:px-0"
                   >
                     Login
                   </button>
                   <button
                     onClick={() => { setShowAuth(true); setAuthMode('signup'); }}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-all text-sm shadow-lg shadow-purple-500/30"
+                    className="px-2 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-md sm:rounded-lg transition-all text-xs sm:text-sm shadow-lg shadow-purple-500/30"
                   >
                     Sign up
                   </button>
@@ -433,9 +434,9 @@ function App() {
                   onClick={() => navigate('/dashboard')}
                   className="relative hover:opacity-80 transition-all"
                 >
-                  <img src={user.avatar} alt={user.name} className="w-9 h-9 rounded-full border-2 border-purple-200" />
-                  <div className="absolute -bottom-1 -right-1 bg-purple-600 rounded-full p-1">
-                    <Crown className="w-3 h-3 text-white" />
+                  <img src={user.avatar} alt={user.name} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-purple-200" />
+                  <div className="absolute -bottom-1 -right-1 bg-purple-600 rounded-full p-0.5 sm:p-1">
+                    <Crown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                   </div>
                 </button>
               )}
@@ -443,10 +444,10 @@ function App() {
               <div className="relative">
                 <button
                   onClick={() => setShowMegaMenu(!showMegaMenu)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-all"
+                  className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-all"
                   title="Menu"
                 >
-                  <Grid3x3 className="w-6 h-6 text-gray-700" />
+                  <Grid3x3 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                 </button>
                 
                 {/* Mega Menu */}
@@ -456,7 +457,7 @@ function App() {
                       className="fixed inset-0 z-40" 
                       onClick={() => setShowMegaMenu(false)}
                     />
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
+                    <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden max-h-[80vh] overflow-y-auto">
                       <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
                         <h3 className="text-white font-bold text-lg">Mail Services</h3>
                         <p className="text-purple-100 text-sm mt-1">Choose your mail service</p>
@@ -1155,31 +1156,33 @@ ${selectedEmail.html_body || selectedEmail.body}`}
         </main>
       ) : (
         // Regular UI Mode
-        <main className="max-w-[1400px] mx-auto px-6 py-8">
+        <main className="max-w-[1400px] mx-auto px-3 sm:px-6 py-4 sm:py-8">
           
           {/* Email Generator - Shopify Style */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-8 mb-6">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200/60 p-4 sm:p-8 mb-4 sm:mb-6">
           {loading && !currentEmail ? (
             <div className="text-center py-12">
               <RefreshCw className="w-12 h-12 text-green-600 animate-spin mx-auto mb-4" />
               <p className="text-gray-600 font-medium">Generating your temporary email...</p>
             </div>
           ) : currentEmail ? (
-            <div className="space-y-5">
+            <div className="space-y-3 sm:space-y-5">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-3">Your temporary email address</h1>
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Your temporary email address</h1>
                 <div className="relative">
-                  <div className="flex items-center space-x-2.5 bg-gray-50/50 border border-gray-300 hover:border-gray-400 p-2.5 rounded-xl focus-within:border-green-600 focus-within:ring-4 focus-within:ring-green-100 transition-all group">
-                    <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                    <input
-                      type="text"
-                      value={currentEmail}
-                      readOnly
-                      className="flex-1 bg-transparent text-base font-mono font-semibold outline-none text-gray-900 selection:bg-green-100"
-                    />
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2.5 bg-gray-50/50 border border-gray-300 hover:border-gray-400 p-2 sm:p-2.5 rounded-xl focus-within:border-green-600 focus-within:ring-2 sm:focus-within:ring-4 focus-within:ring-green-100 transition-all group">
+                    <div className="flex items-center space-x-2 flex-1 min-w-0">
+                      <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                      <input
+                        type="text"
+                        value={currentEmail}
+                        readOnly
+                        className="flex-1 bg-transparent text-sm sm:text-base font-mono font-semibold outline-none text-gray-900 selection:bg-green-100 min-w-0"
+                      />
+                    </div>
                     <button
                       onClick={copyToClipboard}
-                      className="flex-shrink-0 px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center space-x-2"
+                      className="flex-shrink-0 px-3 py-2 sm:py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center justify-center space-x-2"
                       title="Copy to clipboard"
                     >
                       {copied ? (
@@ -1198,39 +1201,40 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/60 p-4 rounded-xl">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-white rounded-lg shadow-sm">
-                      <Clock className="w-5 h-5 text-blue-600" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/60 p-3 sm:p-4 rounded-lg sm:rounded-xl">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="p-1.5 sm:p-2 bg-white rounded-lg shadow-sm">
+                      <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                     </div>
                     <div>
                       <p className="text-xs text-blue-600/80 font-medium">Expires in</p>
-                      <p className="text-xl font-semibold text-blue-900">1 Hour</p>
+                      <p className="text-lg sm:text-xl font-semibold text-blue-900">1 Hour</p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/60 p-4 rounded-xl">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-white rounded-lg shadow-sm">
-                      <Inbox className="w-5 h-5 text-green-600" />
+                <div className="bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/60 p-3 sm:p-4 rounded-lg sm:rounded-xl">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="p-1.5 sm:p-2 bg-white rounded-lg shadow-sm">
+                      <Inbox className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                     </div>
                     <div>
                       <p className="text-xs text-green-600/80 font-medium">Emails received</p>
-                      <p className="text-xl font-semibold text-green-900">{inbox.length}</p>
+                      <p className="text-lg sm:text-xl font-semibold text-green-900">{inbox.length}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center sm:col-span-2 md:col-span-1">
                   <button
                     onClick={generateEmail}
                     disabled={loading}
-                    className="w-full flex items-center justify-center space-x-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 rounded-xl font-medium transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center space-x-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 py-2.5 sm:py-3 px-4 rounded-lg sm:rounded-xl font-medium transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                    <span>Generate new email</span>
+                    <span className="hidden sm:inline">Generate new email</span>
+                    <span className="sm:hidden">New email</span>
                   </button>
                 </div>
               </div>
@@ -1241,19 +1245,19 @@ ${selectedEmail.html_body || selectedEmail.body}`}
 
         {/* Inbox - Shopify Style */}
         {currentEmail && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Email List */}
-            <div className="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
-              <div className="border-b border-gray-200/60 px-5 py-4 flex items-center justify-between">
+            <div className="lg:col-span-1 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
+              <div className="border-b border-gray-200/60 px-3 sm:px-5 py-3 sm:py-4 flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <h3 className="font-semibold text-base text-gray-900">Inbox</h3>
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">{inbox.length}</span>
+                  <h3 className="font-semibold text-sm sm:text-base text-gray-900">Inbox</h3>
+                  <span className="px-1.5 sm:px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">{inbox.length}</span>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 sm:space-x-3">
                   {/* Auto-refresh countdown timer */}
-                  <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="relative flex items-center justify-center w-4 h-4">
-                      <svg className="absolute transform -rotate-90" width="16" height="16">
+                  <div className="flex items-center space-x-1 sm:space-x-1.5 px-1.5 sm:px-2.5 py-1 bg-green-50 border border-green-200 rounded-md sm:rounded-lg">
+                    <div className="relative flex items-center justify-center w-3 h-3 sm:w-4 sm:h-4">
+                      <svg className="absolute transform -rotate-90" width="16" height="16" viewBox="0 0 16 16">
                         <circle
                           cx="8"
                           cy="8"
@@ -1278,19 +1282,19 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                   </div>
                   <button
                     onClick={handleManualRefresh}
-                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-all"
+                    className="p-1 sm:p-1.5 hover:bg-gray-100 rounded-md sm:rounded-lg transition-all"
                     title="Refresh now"
                   >
-                    <RefreshCw className="w-4 h-4 text-gray-600" />
+                    <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600" />
                   </button>
                 </div>
               </div>
 
-              <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
+              <div className="divide-y divide-gray-100 max-h-[400px] sm:max-h-[500px] overflow-y-auto">
                 {inbox.length === 0 ? (
-                  <div className="p-12 text-center">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-gray-100 rounded-xl mb-3">
-                      <Mail className="w-7 h-7 text-gray-400" />
+                  <div className="p-8 sm:p-12 text-center">
+                    <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-xl mb-3">
+                      <Mail className="w-6 h-6 sm:w-7 sm:h-7 text-gray-400" />
                     </div>
                     <p className="text-gray-900 font-medium text-sm">No emails yet</p>
                     <p className="text-xs text-gray-500 mt-1">New emails will appear here</p>
@@ -1300,22 +1304,22 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                     <div
                       key={email.id}
                       onClick={() => markAsRead(email)}
-                      className={`p-4 cursor-pointer hover:bg-gray-50 transition-all border-l-2 text-left ${
+                      className={`p-3 sm:p-4 cursor-pointer hover:bg-gray-50 transition-all border-l-2 text-left ${
                         selectedEmail?.id === email.id ? 'bg-green-50/50 border-green-600' : 'border-transparent'
                       }`}
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <p className={`text-sm font-semibold text-left ${!email.read ? 'text-gray-900' : 'text-gray-700'}`}>
+                      <div className="flex justify-between items-start mb-1.5 sm:mb-2 gap-2">
+                        <p className={`text-xs sm:text-sm font-semibold text-left truncate flex-1 min-w-0 ${!email.read ? 'text-gray-900' : 'text-gray-700'}`}>
                           {email.from}
                         </p>
-                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">{formatTime(email.timestamp)}</span>
+                        <span className="text-xs text-gray-500 bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">{formatTime(email.timestamp)}</span>
                       </div>
-                      <p className={`text-sm text-left ${!email.read ? 'font-bold text-gray-900' : 'text-gray-600'} truncate mb-2`}>
+                      <p className={`text-xs sm:text-sm text-left ${!email.read ? 'font-bold text-gray-900' : 'text-gray-600'} truncate mb-1.5 sm:mb-2`}>
                         {email.subject}
                       </p>
                       {!email.read && (
-                        <span className="inline-flex items-center text-xs bg-green-600 text-white px-3 py-1 rounded-full font-medium">
-                          <span className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>
+                        <span className="inline-flex items-center text-xs bg-green-600 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium">
+                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full mr-1.5 sm:mr-2 animate-pulse"></span>
                           New
                         </span>
                       )}
@@ -1326,74 +1330,76 @@ ${selectedEmail.html_body || selectedEmail.body}`}
             </div>
 
             {/* Email Content - Shopify Style */}
-            <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
+            <div className="lg:col-span-2 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
               {selectedEmail ? (
                 <div className="h-full flex flex-col">
-                  <div className="border-b border-gray-200/60 px-6 py-5 text-left">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex-1 text-left">
+                  <div className="border-b border-gray-200/60 px-3 sm:px-6 py-3 sm:py-5 text-left">
+                    <div className="flex justify-between items-start mb-3 sm:mb-4 gap-2">
+                      <div className="flex-1 text-left min-w-0">
                         <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="text-xl font-semibold text-gray-900 text-left">{selectedEmail.subject}</h3>
+                          <h3 className="text-base sm:text-xl font-semibold text-gray-900 text-left truncate">{selectedEmail.subject}</h3>
                           {!selectedEmail.read && (
                             <span className="inline-flex h-2 w-2 rounded-full bg-green-600"></span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 text-left">{formatTime(selectedEmail.timestamp)}</p>
+                        <p className="text-xs sm:text-sm text-gray-600 text-left">{formatTime(selectedEmail.timestamp)}</p>
                       </div>
-                      <div className="flex items-center space-x-1">
+                      <div className="flex items-center space-x-1 flex-shrink-0">
                         <button
                           onClick={() => shareAsNoteMail(selectedEmail)}
-                          className="p-2 hover:bg-gray-100 rounded-lg transition-all"
+                          className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-all"
                           title="Share as NoteMail"
                         >
-                          <ExternalLink className="w-4 h-4 text-gray-600" />
+                          <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600" />
                         </button>
                         <button
                           onClick={() => deleteEmail(selectedEmail.id)}
-                          className="p-2 hover:bg-red-50 rounded-lg transition-all"
+                          className="p-1.5 sm:p-2 hover:bg-red-50 rounded-lg transition-all"
                           title="Delete email"
                         >
-                          <Trash2 className="w-4 h-4 text-red-600" />
+                          <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600" />
                         </button>
                       </div>
                     </div>
-                    <div className="space-y-2 text-left">
+                    <div className="space-y-1.5 sm:space-y-2 text-left">
                       <div className="flex items-start">
-                        <span className="text-xs font-medium text-gray-500 w-16 text-left">From</span>
-                        <span className="text-sm text-gray-900 flex-1 text-left">{selectedEmail.from || 'Unknown Sender'}</span>
+                        <span className="text-xs font-medium text-gray-500 w-12 sm:w-16 text-left flex-shrink-0">From</span>
+                        <span className="text-xs sm:text-sm text-gray-900 flex-1 text-left break-words">{selectedEmail.from || 'Unknown Sender'}</span>
                       </div>
                     </div>
                     {/* View Mode Toggle - Only show if both HTML and plain text exist */}
                     {selectedEmail.html_body && selectedEmail.html_body !== selectedEmail.body.replace(/\n/g, '<br>') && (
-                      <div className="flex items-center space-x-1 mt-4">
+                      <div className="flex items-center space-x-1 mt-3 sm:mt-4">
                         <button
                           onClick={() => setViewMode('html')}
-                          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                          className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-md sm:rounded-lg transition-all ${
                             viewMode === 'html' 
                               ? 'bg-gray-900 text-white' 
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
-                          Rich HTML
+                          <span className="hidden sm:inline">Rich HTML</span>
+                          <span className="sm:hidden">HTML</span>
                         </button>
                         <button
                           onClick={() => setViewMode('plain')}
-                          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                          className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-md sm:rounded-lg transition-all ${
                             viewMode === 'plain' 
                               ? 'bg-gray-900 text-white' 
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
-                          Plain Text
+                          <span className="hidden sm:inline">Plain Text</span>
+                          <span className="sm:hidden">Plain</span>
                         </button>
                       </div>
                     )}
                   </div>
-                  <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
+                  <div className="flex-1 p-3 sm:p-8 overflow-y-auto bg-gray-50">
                     {viewMode === 'html' && selectedEmail.html_body ? (
                       <div className="w-full">
                         <div 
-                          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                          className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-6"
                           style={{
                             minHeight: '200px'
                           }}
@@ -1415,8 +1421,8 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                       </div>
                     ) : (
                       <div className="w-full">
-                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                          <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-base text-left" style={{ fontFamily: 'monospace' }}>
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-6">
+                          <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-sm sm:text-base text-left break-words" style={{ fontFamily: 'monospace' }}>
                             {selectedEmail.body}
                           </p>
                         </div>
@@ -1425,13 +1431,13 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                   </div>
                 </div>
               ) : (
-                <div className="h-96 flex items-center justify-center">
+                <div className="h-64 sm:h-96 flex items-center justify-center p-4">
                   <div className="text-center">
-                    <div className="inline-block p-6 bg-gray-100 rounded-full mb-4">
-                      <Mail className="w-16 h-16 text-gray-400" />
+                    <div className="inline-block p-4 sm:p-6 bg-gray-100 rounded-full mb-3 sm:mb-4">
+                      <Mail className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" />
                     </div>
-                    <p className="text-gray-700 font-medium text-lg">Select an email to view</p>
-                    <p className="text-gray-500 text-sm mt-2">Click on any email from the inbox</p>
+                    <p className="text-gray-700 font-medium text-base sm:text-lg">Select an email to view</p>
+                    <p className="text-gray-500 text-xs sm:text-sm mt-1 sm:mt-2">Click on any email from the inbox</p>
                   </div>
                 </div>
               )}
@@ -1443,42 +1449,42 @@ ${selectedEmail.html_body || selectedEmail.body}`}
 
       {/* How to Use Section - Hidden in Dev Mode */}
       {!devMode && (
-      <section className="mt-16 bg-white py-16 border-y border-gray-200">
+      <section className="mt-8 sm:mt-16 bg-white py-8 sm:py-16 border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How to Use TempMail</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">How to Use TempMail</h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
               Get started with your temporary email in three simple steps
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                <span className="text-2xl font-bold text-green-600">1</span>
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full mb-3 sm:mb-4">
+                <span className="text-xl sm:text-2xl font-bold text-green-600">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Get Your Email</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">Get Your Email</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 A temporary email address is automatically generated when you visit our site. Copy it with one click.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
-                <span className="text-2xl font-bold text-blue-600">2</span>
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full mb-3 sm:mb-4">
+                <span className="text-xl sm:text-2xl font-bold text-blue-600">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Use Anywhere</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">Use Anywhere</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 Use your temporary email for signups, verifications, or any service that requires an email address.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
-                <span className="text-2xl font-bold text-purple-600">3</span>
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-purple-100 rounded-full mb-3 sm:mb-4">
+                <span className="text-xl sm:text-2xl font-bold text-purple-600">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Receive Instantly</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">Receive Instantly</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 All emails sent to your temporary address appear instantly in your inbox. No waiting required.
               </p>
             </div>
@@ -1490,22 +1496,22 @@ ${selectedEmail.html_body || selectedEmail.body}`}
       {!devMode && (
       <>
       {/* Why TempMail Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-8 sm:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Use Temporary Email?</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Why Use Temporary Email?</h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
               Protect your privacy and keep your primary inbox clean
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-green-600" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="bg-white p-4 sm:p-6 rounded-lg sm:rounded-xl border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Privacy Protection</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Privacy Protection</h3>
+              <p className="text-gray-600 text-xs sm:text-sm">
                 Keep your real email address private and avoid unwanted tracking from websites and services.
               </p>
             </div>
@@ -1544,22 +1550,22 @@ ${selectedEmail.html_body || selectedEmail.body}`}
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-white">
+      <section className="py-8 sm:py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-gray-600">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Frequently Asked Questions</h2>
+            <p className="text-base sm:text-lg text-gray-600">
               Everything you need to know about temporary email services
             </p>
           </div>
           
-          <div className="space-y-6">
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
-              <div className="flex items-start space-x-3">
-                <HelpCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-gray-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-200 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
+              <div className="flex items-start space-x-2 sm:space-x-3">
+                <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 flex-shrink-0 mt-0.5 sm:mt-1" />
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">What is a temporary email address?</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">What is a temporary email address?</h3>
+                  <p className="text-sm sm:text-base text-gray-600">
                     A temporary email address is a disposable email that you can use for a short period of time. It allows you to receive emails without revealing your real email address. Our service provides instant temporary emails that expire after 1 hour.
                   </p>
                 </div>
@@ -1632,46 +1638,46 @@ ${selectedEmail.html_body || selectedEmail.body}`}
       )}
 
       {/* Footer */}
-      <footer className="mt-0 pb-12 border-t border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 pt-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <footer className="mt-0 pb-8 sm:pb-12 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 pt-8 sm:pt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
             <div>
-              <div className="flex items-center space-x-2 mb-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <Shield className="w-5 h-5 text-green-600" />
+              <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                <div className="p-1.5 sm:p-2 bg-green-100 rounded-lg">
+                  <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                 </div>
-                <h4 className="font-bold text-gray-900">100% Secure</h4>
+                <h4 className="font-bold text-sm sm:text-base text-gray-900">100% Secure</h4>
               </div>
-              <p className="text-sm text-gray-600">Your data is never stored permanently. Complete privacy guaranteed.</p>
+              <p className="text-xs sm:text-sm text-gray-600">Your data is never stored permanently. Complete privacy guaranteed.</p>
             </div>
             <div>
-              <div className="flex items-center space-x-2 mb-3">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <Zap className="w-5 h-5 text-yellow-600" />
+              <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-lg">
+                  <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600" />
                 </div>
-                <h4 className="font-bold text-gray-900">Instant Setup</h4>
+                <h4 className="font-bold text-sm sm:text-base text-gray-900">Instant Setup</h4>
               </div>
-              <p className="text-sm text-gray-600">No registration needed. Get your temporary email in seconds.</p>
+              <p className="text-xs sm:text-sm text-gray-600">No registration needed. Get your temporary email in seconds.</p>
             </div>
-            <div>
-              <div className="flex items-center space-x-2 mb-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Clock className="w-5 h-5 text-blue-600" />
+            <div className="sm:col-span-2 md:col-span-1">
+              <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                 </div>
-                <h4 className="font-bold text-gray-900">Auto-Delete</h4>
+                <h4 className="font-bold text-sm sm:text-base text-gray-900">Auto-Delete</h4>
               </div>
-              <p className="text-sm text-gray-600">All emails automatically expire after 1 hour for your privacy.</p>
+              <p className="text-xs sm:text-sm text-gray-600">All emails automatically expire after 1 hour for your privacy.</p>
             </div>
           </div>
           
-          <div className="border-t border-gray-200 pt-8 text-center">
-            <div className="flex items-center justify-center space-x-2 mb-3">
-              <div className="bg-green-600 p-2 rounded-lg">
-                <Mail className="w-5 h-5 text-white" />
+          <div className="border-t border-gray-200 pt-6 sm:pt-8 text-center">
+            <div className="flex items-center justify-center space-x-2 mb-2 sm:mb-3">
+              <div className="bg-green-600 p-1.5 sm:p-2 rounded-lg">
+                <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">TempMail</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900">TempMail</h3>
             </div>
-            <p className="text-gray-600 text-sm mb-2">© 2024 TempMail - All rights reserved</p>
+            <p className="text-gray-600 text-xs sm:text-sm mb-1 sm:mb-2">© 2024 TempMail - All rights reserved</p>
             <p className="text-xs text-gray-500">Free disposable temporary email service</p>
           </div>
         </div>
@@ -1679,35 +1685,35 @@ ${selectedEmail.html_body || selectedEmail.body}`}
 
       {/* Command Palette Modal */}
       {showCommandPalette && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center pt-20"
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center pt-12 sm:pt-20 p-3 sm:p-0"
              onClick={() => setShowCommandPalette(false)}>
-          <div className={`${devMode ? 'bg-black border-gray-700' : 'bg-white'} rounded-xl shadow-2xl w-full max-w-2xl mx-4 border ${devMode ? 'border-gray-700' : 'border-gray-200'}`}
+          <div className={`${devMode ? 'bg-black border-gray-700' : 'bg-white'} rounded-lg sm:rounded-xl shadow-2xl w-full max-w-2xl mx-auto border ${devMode ? 'border-gray-700' : 'border-gray-200'} max-h-[85vh] overflow-y-auto`}
                onClick={(e) => e.stopPropagation()}>
             {/* Header */}
-            <div className={`border-b ${devMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'} px-6 py-4`}>
-              <h3 className={`text-lg font-bold ${devMode ? 'text-green-400' : 'text-gray-900'} flex items-center space-x-2`}>
-                <Zap className="w-5 h-5" />
+            <div className={`border-b ${devMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'} px-4 sm:px-6 py-3 sm:py-4`}>
+              <h3 className={`text-base sm:text-lg font-bold ${devMode ? 'text-green-400' : 'text-gray-900'} flex items-center space-x-2`}>
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Command Palette</span>
               </h3>
-              <p className={`text-sm ${devMode ? 'text-gray-400' : 'text-gray-600'} mt-1`}>
+              <p className={`text-xs sm:text-sm ${devMode ? 'text-gray-400' : 'text-gray-600'} mt-1`}>
                 Keyboard shortcuts for faster navigation
               </p>
             </div>
 
             {/* Commands List */}
-            <div className="p-6 space-y-3">
-              <div className={`flex items-center justify-between p-4 rounded-lg ${devMode ? 'bg-gray-900 border border-gray-700 hover:border-green-600' : 'bg-gray-50 hover:bg-gray-100'} transition-all cursor-pointer`}
+            <div className="p-3 sm:p-6 space-y-2 sm:space-y-3">
+              <div className={`flex items-center justify-between p-3 sm:p-4 rounded-lg ${devMode ? 'bg-gray-900 border border-gray-700 hover:border-green-600' : 'bg-gray-50 hover:bg-gray-100'} transition-all cursor-pointer gap-2`}
                    onClick={() => { generateEmail(); setShowCommandPalette(false); }}>
-                <div className="flex items-center space-x-3">
-                  <div className={`p-2 ${devMode ? 'bg-green-900/30' : 'bg-green-100'} rounded-lg`}>
-                    <Mail className={`w-5 h-5 ${devMode ? 'text-green-400' : 'text-green-600'}`} />
+                <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                  <div className={`p-1.5 sm:p-2 ${devMode ? 'bg-green-900/30' : 'bg-green-100'} rounded-lg flex-shrink-0`}>
+                    <Mail className={`w-4 h-4 sm:w-5 sm:h-5 ${devMode ? 'text-green-400' : 'text-green-600'}`} />
                   </div>
-                  <div>
-                    <p className={`font-semibold ${devMode ? 'text-green-400' : 'text-gray-900'}`}>Generate New Email</p>
-                    <p className={`text-xs ${devMode ? 'text-gray-500' : 'text-gray-600'}`}>Create a fresh temporary email address</p>
+                  <div className="min-w-0">
+                    <p className={`font-semibold text-sm sm:text-base ${devMode ? 'text-green-400' : 'text-gray-900'} truncate`}>Generate New Email</p>
+                    <p className={`text-xs ${devMode ? 'text-gray-500' : 'text-gray-600'} hidden sm:block`}>Create a fresh temporary email address</p>
                   </div>
                 </div>
-                <kbd className={`px-3 py-1 ${devMode ? 'bg-black border-gray-600 text-green-400' : 'bg-white border-gray-300 text-gray-700'} border rounded text-sm font-mono`}>
+                <kbd className={`px-2 sm:px-3 py-1 ${devMode ? 'bg-black border-gray-600 text-green-400' : 'bg-white border-gray-300 text-gray-700'} border rounded text-xs sm:text-sm font-mono flex-shrink-0`}>
                   Ctrl+N
                 </kbd>
               </div>
@@ -1780,9 +1786,9 @@ ${selectedEmail.html_body || selectedEmail.body}`}
             </div>
 
             {/* Footer */}
-            <div className={`border-t ${devMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'} px-6 py-4`}>
+            <div className={`border-t ${devMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'} px-4 sm:px-6 py-3 sm:py-4`}>
               <p className={`text-xs ${devMode ? 'text-gray-500' : 'text-gray-600'} text-center`}>
-                Press <kbd className={`px-2 py-0.5 ${devMode ? 'bg-black border-gray-600 text-green-400' : 'bg-white border-gray-300 text-gray-700'} border rounded font-mono text-xs`}>Ctrl+/</kbd> to open this palette anytime
+                Press <kbd className={`px-1.5 sm:px-2 py-0.5 ${devMode ? 'bg-black border-gray-600 text-green-400' : 'bg-white border-gray-300 text-gray-700'} border rounded font-mono text-xs`}>Ctrl+/</kbd> to open this palette anytime
               </p>
             </div>
           </div>
@@ -1791,23 +1797,23 @@ ${selectedEmail.html_body || selectedEmail.body}`}
 
       {/* Login/Signup Modal */}
       {showAuth && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4"
              onClick={() => setShowAuth(false)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md"
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
                onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
-            <div className="border-b border-gray-200 px-8 py-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent flex items-center space-x-2">
-                <Crown className="w-6 h-6 text-purple-600" />
+            <div className="border-b border-gray-200 px-4 sm:px-8 py-4 sm:py-6">
+              <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent flex items-center space-x-2">
+                <Crown className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                 <span>{authMode === 'login' ? 'Welcome Back' : 'Join Premium'}</span>
               </h2>
-              <p className="text-gray-600 mt-2 text-sm">
+              <p className="text-gray-600 mt-2 text-xs sm:text-sm">
                 {authMode === 'login' ? 'Sign in to access your premium account' : 'Create your premium account today'}
               </p>
             </div>
 
             {/* Modal Body */}
-            <div className="p-8">
+            <div className="p-4 sm:p-8">
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
@@ -1819,42 +1825,42 @@ ${selectedEmail.html_body || selectedEmail.body}`}
               }} className="space-y-4">
                 {authMode === 'signup' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Full Name</label>
                     <input
                       type="text"
                       name="name"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
                       placeholder="John Doe"
                     />
                   </div>
                 )}
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Email Address</label>
                   <input
                     type="email"
                     name="email"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
                     placeholder="you@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Password</label>
                   <input
                     type="password"
                     name="password"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
                     placeholder="••••••••"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-all shadow-lg shadow-purple-500/30 flex items-center justify-center space-x-2"
+                  className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm sm:text-base font-semibold rounded-lg transition-all shadow-lg shadow-purple-500/30 flex items-center justify-center space-x-2"
                 >
                   <span>{authMode === 'login' ? 'Sign In' : 'Create Account'}</span>
                   <ChevronRight className="w-5 h-5" />
