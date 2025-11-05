@@ -474,11 +474,11 @@ function App() {
                           className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-all group"
                         >
                           <div className="bg-pink-100 p-3 rounded-lg group-hover:bg-pink-200 transition-all">
-                            <Package className="w-6 h-6 text-pink-600" />
+                            <Mail className="w-6 h-6 text-pink-600" />
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold text-gray-900">BallonMail</h4>
-                            <p className="text-xs text-gray-500">Bulk email service</p>
+                            <p className="text-xs text-gray-500">Temporary email service</p>
                           </div>
                           <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600" />
                         </a>
