@@ -428,16 +428,15 @@ function App() {
                   </button>
                 </>
               ) : (
-                <div className="relative">
-                  <button
-                    onClick={() => navigate('/dashboard')}
-                    className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border border-purple-200 rounded-lg transition-all"
-                  >
-                    <img src={user.avatar} alt={user.name} className="w-6 h-6 rounded-full" />
-                    <span className="hidden sm:inline font-medium text-gray-900">{user.name}</span>
-                    <Crown className="w-4 h-4 text-purple-600" />
-                  </button>
-                </div>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="relative hover:opacity-80 transition-all"
+                >
+                  <img src={user.avatar} alt={user.name} className="w-9 h-9 rounded-full border-2 border-purple-200" />
+                  <div className="absolute -bottom-1 -right-1 bg-purple-600 rounded-full p-1">
+                    <Crown className="w-3 h-3 text-white" />
+                  </div>
+                </button>
               )}
               
               <button
