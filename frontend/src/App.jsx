@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Copy, RefreshCw, Trash2, Clock, Check, Inbox, Shield, Zap, Download, ExternalLink, ChevronRight, HelpCircle, Lock, UserCheck, AlertCircle, CheckCircle, User, LogIn, LogOut, Crown, Star, Settings, BarChart3, TrendingUp, Package } from 'lucide-react';
+import { Mail, Copy, RefreshCw, Trash2, Clock, Check, Inbox, Shield, Zap, Download, ExternalLink, ChevronRight, HelpCircle, Lock, UserCheck, AlertCircle, CheckCircle, User, LogIn, LogOut, Crown, Star, Settings, BarChart3, TrendingUp, Package, Grid3x3 } from 'lucide-react';
 import axios from 'axios';
 
 // Use environment variable or fallback to demo mode
@@ -404,33 +404,29 @@ function App() {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">TempMail</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               {DEMO_MODE && (
                 <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-sm">
                   <AlertCircle className="w-4 h-4 text-amber-600" />
                   <span className="font-medium text-amber-700">Demo Mode</span>
                 </div>
               )}
-              <button
-                onClick={() => setDevMode(!devMode)}
-                className={`flex items-center space-x-2 px-4 py-2 font-medium rounded-lg transition-all text-sm ${
-                  devMode 
-                    ? 'bg-green-600 hover:bg-green-700 text-white' 
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                }`}
-              >
-                <Zap className="w-4 h-4" />
-                <span className="hidden sm:inline">Dev Mode</span>
-              </button>
               
               {!isAuthenticated ? (
-                <button
-                  onClick={() => { setShowAuth(true); setAuthMode('login'); }}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-all text-sm shadow-lg shadow-purple-500/30"
-                >
-                  <Crown className="w-4 h-4" />
-                  <span className="hidden sm:inline">Premium</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => { setShowAuth(true); setAuthMode('login'); }}
+                    className="text-gray-700 hover:text-gray-900 font-medium text-sm transition-all"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => { setShowAuth(true); setAuthMode('signup'); }}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-all text-sm"
+                  >
+                    Sign up
+                  </button>
+                </>
               ) : (
                 <div className="relative">
                   <button
@@ -444,13 +440,12 @@ function App() {
                 </div>
               )}
               
-              <a
-                href="/notemail"
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-all text-sm"
+              <button
+                className="p-2 hover:bg-gray-100 rounded-lg transition-all"
+                title="Menu"
               >
-                <ExternalLink className="w-4 h-4" />
-                <span className="hidden sm:inline">NoteMail</span>
-              </a>
+                <Grid3x3 className="w-6 h-6 text-gray-700" />
+              </button>
             </div>
           </div>
         </div>
