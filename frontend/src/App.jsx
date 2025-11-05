@@ -397,14 +397,18 @@ function App() {
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200/60 sticky top-0 z-50">
         <div className="px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            <button 
+              onClick={() => window.location.reload()}
+              className="flex items-center space-x-2 sm:space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+              aria-label="TempMail Home"
+            >
               <div className="bg-gradient-to-br from-green-600 to-green-700 p-1.5 sm:p-2 rounded-lg sm:rounded-xl shadow-sm">
                 <Mail className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
                 <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">TempMail<sup className="text-xs sm:text-sm ml-0.5 text-green-600">GB</sup></h1>
               </div>
-            </div>
+            </button>
             <div className="flex items-center space-x-2 sm:space-x-4">
               {DEMO_MODE && (
                 <div className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-amber-50 border border-amber-200 rounded-md sm:rounded-lg text-xs sm:text-sm">
