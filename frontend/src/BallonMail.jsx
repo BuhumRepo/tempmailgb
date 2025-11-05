@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Mail, Send, ArrowLeft, Plus, X, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+// API Configuration
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function BallonMail() {
   const navigate = useNavigate();
@@ -59,18 +63,36 @@ function BallonMail() {
 
     setSending(true);
 
-    // Simulate sending (replace with actual API call)
-    setTimeout(() => {
+    try {
+      // Send bulk emails via API
+      const response = await axios.post(`${API_URL}/api/send-bulk`, {
+        recipients: validRecipients,
+        subject: subject,
+        message: message,
+        fromName: 'BallonMail GB'
+      });
+
+      if (response.data.success) {
+        setSending(false);
+        setSent(true);
+        setError('');
+        
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setSent(false);
+          setRecipients(['']);
+          setSubject('');
+          setMessage('');
+        }, 3000);
+      } else {
+        setSending(false);
+        setError(response.data.error || 'Failed to send emails');
+      }
+    } catch (err) {
       setSending(false);
-      setSent(true);
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setSent(false);
-        setRecipients(['']);
-        setSubject('');
-        setMessage('');
-      }, 3000);
-    }, 2000);
+      console.error('Error sending emails:', err);
+      setError(err.response?.data?.error || 'Failed to send emails. Please check your connection and try again.');
+    }
   };
 
   return (

@@ -1,9 +1,22 @@
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// SMTP Configuration
+// You can use Gmail, your own SMTP server, or any free SMTP service
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com', // Change to your SMTP server
+  port: process.env.SMTP_PORT || 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER || 'your-email@gmail.com', // Your email
+    pass: process.env.SMTP_PASS || 'your-app-password' // Your password or app password
+  }
+});
 
 // Middleware
 app.use(cors());
@@ -190,6 +203,87 @@ app.delete('/api/email/:emailAddress/:emailId', (req, res) => {
   });
 });
 
+// Bulk email sending endpoint for BallonMail
+app.post('/api/send-bulk', async (req, res) => {
+  const { recipients, subject, message, fromName } = req.body;
+
+  // Validation
+  if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'Recipients array is required'
+    });
+  }
+
+  if (!subject || !message) {
+    return res.status(400).json({
+      success: false,
+      error: 'Subject and message are required'
+    });
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const invalidEmails = recipients.filter(email => !emailRegex.test(email));
+  
+  if (invalidEmails.length > 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid email addresses found',
+      invalidEmails
+    });
+  }
+
+  try {
+    // Send emails in parallel
+    const sendPromises = recipients.map(recipient => {
+      return transporter.sendMail({
+        from: `"${fromName || 'BallonMail'}" <${process.env.SMTP_USER || 'noreply@tempmailgb.com'}>`,
+        to: recipient,
+        subject: subject,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%); padding: 20px; border-radius: 10px 10px 0 0;">
+              <h2 style="color: white; margin: 0;">BallonMail<sup style="font-size: 12px;">GB</sup></h2>
+            </div>
+            <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
+              <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                ${message.replace(/\n/g, '<br>')}
+              </div>
+              <p style="color: #6b7280; font-size: 12px; margin-top: 20px; text-align: center;">
+                Sent via BallonMail<sup style="font-size: 10px;">GB</sup> - Bulk Email Service
+              </p>
+            </div>
+          </div>
+        `,
+        text: message // Plain text fallback
+      });
+    });
+
+    const results = await Promise.allSettled(sendPromises);
+    
+    // Count successes and failures
+    const successful = results.filter(r => r.status === 'fulfilled').length;
+    const failed = results.filter(r => r.status === 'rejected').length;
+
+    res.json({
+      success: true,
+      message: `Emails sent to ${successful} recipient(s)`,
+      sent: successful,
+      failed: failed,
+      total: recipients.length
+    });
+
+  } catch (error) {
+    console.error('Bulk email error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to send emails',
+      details: error.message
+    });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -197,4 +291,5 @@ app.get('/api/health', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`SMTP configured with host: ${process.env.SMTP_HOST || 'smtp.gmail.com'}`);
 });
