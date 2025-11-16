@@ -203,7 +203,7 @@ function BallonMail() {
                   </div>
                   <div>
                     <p className="text-xs text-purple-600/80 font-medium">Expires in</p>
-                    <p className="text-lg sm:text-xl font-semibold text-purple-900">1 Hour</p>
+                    <p className="text-lg sm:text-xl font-semibold text-purple-900">15 Minutes</p>
                   </div>
                 </div>
               </div>

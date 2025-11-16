@@ -169,7 +169,7 @@ function SpeedMail() {
                   </div>
                   <div>
                     <p className="text-xs text-orange-600/80 font-medium">Expires in</p>
-                    <p className="text-lg sm:text-xl font-semibold text-orange-900">1 Hour</p>
+                    <p className="text-lg sm:text-xl font-semibold text-orange-900">15 Minutes</p>
                   </div>
                 </div>
               </div>

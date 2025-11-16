@@ -30,7 +30,7 @@
 - ✅ Auto-generate temporary email addresses
 - ✅ Receive emails in inbox
 - ✅ Read/delete emails
-- ✅ 1-hour email expiration
+- ✅ 15-minute email expiration
 - ✅ Beautiful green Shopify-style UI
 - ✅ "How to Use" section
 - ✅ "Why TempMail Important" section

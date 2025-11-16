@@ -163,7 +163,7 @@ function App() {
         const randomString = Math.random().toString(36).substring(2, 12);
         const email = `${randomString}@ainewmail.online`;
         setCurrentEmail(email);
-        setExpiresAt(Date.now() + 3600000); // 1 hour
+        setExpiresAt(Date.now() + 900000); // 15 minutes
         setInbox([]);
         setSelectedEmail(null);
         setShowLanding(false);
@@ -311,8 +311,8 @@ function App() {
             id: Date.now().toString(),
             from: 'welcome@tempmail.com',
             subject: 'Welcome to TempMail! 🎉',
-            body: 'Thank you for using TempMail! This is a demo email showing how our temporary email service works.\n\nYour temporary email address is active and ready to receive messages. Use it anywhere you need a disposable email address.\n\nFeatures:\n• Instant email generation\n• No registration required\n• Automatic expiration after 1 hour\n• Complete privacy protection\n\nEnjoy using TempMail!',
-            html_body: '<div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;"><div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><h2 style="color: #667eea; margin-top: 0;">Welcome to TempMail! 🎉</h2><p style="color: #333; line-height: 1.6; margin-bottom: 20px;">Thank you for using TempMail! This is a demo email showing how our temporary email service works.</p><p style="color: #666; line-height: 1.6; margin-bottom: 20px;">Your temporary email address is active and ready to receive messages. Use it anywhere you need a disposable email address.</p><div style="background: #f7fafc; padding: 20px; border-radius: 6px; margin: 20px 0;"><h3 style="color: #667eea; margin-top: 0; font-size: 16px;">Features:</h3><ul style="color: #333; line-height: 1.8; margin: 0; padding-left: 20px;"><li>Instant email generation</li><li>No registration required</li><li>Automatic expiration after 1 hour</li><li>Complete privacy protection</li></ul></div><p style="color: #333; line-height: 1.6; margin-bottom: 0;">Enjoy using TempMail!</p></div></div>',
+            body: 'Thank you for using TempMail! This is a demo email showing how our temporary email service works.\n\nYour temporary email address is active and ready to receive messages. Use it anywhere you need a disposable email address.\n\nFeatures:\n• Instant email generation\n• No registration required\n• Automatic expiration after 15 minutes\n• Complete privacy protection\n\nEnjoy using TempMail!',
+            html_body: '<div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;"><div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><h2 style="color: #667eea; margin-top: 0;">Welcome to TempMail! 🎉</h2><p style="color: #333; line-height: 1.6; margin-bottom: 20px;">Thank you for using TempMail! This is a demo email showing how our temporary email service works.</p><p style="color: #666; line-height: 1.6; margin-bottom: 20px;">Your temporary email address is active and ready to receive messages. Use it anywhere you need a disposable email address.</p><div style="background: #f7fafc; padding: 20px; border-radius: 6px; margin: 20px 0;"><h3 style="color: #667eea; margin-top: 0; font-size: 16px;">Features:</h3><ul style="color: #333; line-height: 1.8; margin: 0; padding-left: 20px;"><li>Instant email generation</li><li>No registration required</li><li>Automatic expiration after 15 minutes</li><li>Complete privacy protection</li></ul></div><p style="color: #333; line-height: 1.6; margin-bottom: 0;">Enjoy using TempMail!</p></div></div>',
             timestamp: Date.now(),
             read: false
           },
@@ -1213,7 +1213,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                     </div>
                     <div>
                       <p className="text-xs text-blue-600/80 font-medium">Expires in</p>
-                      <p className="text-lg sm:text-xl font-semibold text-blue-900">1 Hour</p>
+                      <p className="text-lg sm:text-xl font-semibold text-blue-900">15 Minutes</p>
                     </div>
                   </div>
                 </div>
@@ -1570,7 +1570,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">What is a temporary email address?</h3>
                   <p className="text-sm sm:text-base text-gray-600">
-                    A temporary email address is a disposable email that you can use for a short period of time. It allows you to receive emails without revealing your real email address. Our service provides instant temporary emails that expire after 1 hour.
+                    A temporary email address is a disposable email that you can use for a short period of time. It allows you to receive emails without revealing your real email address. Our service provides instant temporary emails that expire after 15 minutes.
                   </p>
                 </div>
               </div>
@@ -1582,7 +1582,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">How long does the temporary email last?</h3>
                   <p className="text-gray-600">
-                    Your temporary email address remains active for 1 hour from the time of generation. After this period, the email address and all received messages are automatically deleted to protect your privacy.
+                    Your temporary email address remains active for 15 minutes from the time of generation. After this period, the email address and all received messages are automatically deleted to protect your privacy.
                   </p>
                 </div>
               </div>
@@ -1618,7 +1618,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">Is my data secure and private?</h3>
                   <p className="text-gray-600">
-                    Yes, your privacy is our priority. We don't store any personal information, and all emails are automatically deleted after 1 hour. We don't track your activity or share any data with third parties.
+                    Yes, your privacy is our priority. We don't store any personal information, and all emails are automatically deleted after 15 minutes. We don't track your activity or share any data with third parties.
                   </p>
                 </div>
               </div>
@@ -1670,7 +1670,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                 </div>
                 <h4 className="font-bold text-sm sm:text-base text-gray-900">Auto-Delete</h4>
               </div>
-              <p className="text-xs sm:text-sm text-gray-600">All emails automatically expire after 1 hour for your privacy.</p>
+              <p className="text-xs sm:text-sm text-gray-600">All emails automatically expire after 15 minutes for your privacy.</p>
             </div>
           </div>
           

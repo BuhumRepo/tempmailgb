@@ -61,13 +61,13 @@ setInterval(cleanExpiredEmails, 60000);
 app.post('/api/generate', (req, res) => {
   const email = generateEmail();
   emails.set(email, []);
-  // Email expires in 1 hour
-  emailExpiry.set(email, Date.now() + 3600000);
+  // Email expires in 15 minutes
+  emailExpiry.set(email, Date.now() + 900000);
   
   res.json({
     success: true,
     email: email,
-    expiresIn: 3600000
+    expiresIn: 900000
   });
 });
 
