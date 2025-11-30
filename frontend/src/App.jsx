@@ -1248,7 +1248,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
         </div>
 
         {/* Inbox - Shopify Style */}
-        {currentEmail && (
+        {(currentEmail || loading) && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Email List */}
             <div className="lg:col-span-1 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
@@ -1286,16 +1286,25 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                   </div>
                   <button
                     onClick={handleManualRefresh}
-                    className="p-1 sm:p-1.5 hover:bg-gray-100 rounded-md sm:rounded-lg transition-all"
+                    disabled={loading}
+                    className={`p-1 sm:p-1.5 hover:bg-gray-100 rounded-md sm:rounded-lg transition-all ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title="Refresh now"
                   >
-                    <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600" />
+                    <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600 ${loading ? 'animate-spin' : ''}`} />
                   </button>
                 </div>
               </div>
 
               <div className="divide-y divide-gray-100 max-h-[400px] sm:max-h-[500px] overflow-y-auto">
-                {inbox.length === 0 ? (
+                {loading && !currentEmail ? (
+                  <div className="p-8 sm:p-12 text-center">
+                    <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 rounded-xl mb-3">
+                      <RefreshCw className="w-6 h-6 sm:w-7 sm:h-7 text-green-600 animate-spin" />
+                    </div>
+                    <p className="text-gray-900 font-medium text-sm">Loading inbox...</p>
+                    <p className="text-xs text-gray-500 mt-1">Connecting to secure server</p>
+                  </div>
+                ) : inbox.length === 0 ? (
                   <div className="p-8 sm:p-12 text-center">
                     <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-xl mb-3">
                       <Mail className="w-6 h-6 sm:w-7 sm:h-7 text-gray-400" />
