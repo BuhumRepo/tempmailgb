@@ -194,6 +194,8 @@ function App() {
 
   // Generate custom email with user-specified prefix
   const generateCustomEmail = async () => {
+    console.log('generateCustomEmail called, customPrefix:', customPrefix);
+    
     // Validate prefix
     const prefix = customPrefix.trim().toLowerCase();
     
@@ -224,13 +226,21 @@ function App() {
       if (DEMO_MODE) {
         // Demo mode: Generate custom email client-side
         const email = `${prefix}@ainewmail.online`;
+        console.log('Generating custom email:', email);
+        
+        // Update states in sequence with slight delay to ensure React processes them
         setCurrentEmail(email);
         setExpiresAt(Date.now() + 900000); // 15 minutes
         setInbox([]);
         setSelectedEmail(null);
         setShowLanding(false);
-        setShowCustomEmail(false);
-        setCustomPrefix('');
+        
+        // Close modal after a brief moment to ensure email is set
+        setTimeout(() => {
+          setShowCustomEmail(false);
+          setCustomPrefix('');
+        }, 100);
+        
         logNetwork('POST', '/generate/custom', 200, 55);
       } else {
         const startTime = performance.now();
