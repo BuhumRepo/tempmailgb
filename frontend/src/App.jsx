@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Copy, RefreshCw, Trash2, Clock, Check, Inbox, Shield, Zap, Download, ExternalLink, ChevronRight, HelpCircle, Lock, UserCheck, AlertCircle, CheckCircle, User, LogIn, LogOut, Crown, Star, Settings, BarChart3, TrendingUp, Package, Grid3x3 } from 'lucide-react';
+import { Mail, Copy, RefreshCw, Trash2, Clock, Check, Inbox, Shield, Zap, Download, ExternalLink, ChevronRight, HelpCircle, Lock, UserCheck, AlertCircle, CheckCircle, User, LogIn, LogOut, Crown, Star, Settings, BarChart3, TrendingUp, Package, Grid3x3, QrCode, X, Edit3, Sparkles } from 'lucide-react';
 import axios from 'axios';
 
 // Use environment variable or fallback to demo mode
@@ -36,6 +36,12 @@ function App() {
   });
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
+  
+  // Custom Email & QR Code
+  const [showCustomEmail, setShowCustomEmail] = useState(false);
+  const [customPrefix, setCustomPrefix] = useState('');
+  const [customEmailError, setCustomEmailError] = useState('');
+  const [showQrCode, setShowQrCode] = useState(false);
   
   // Premium Mode & Authentication
   const [showAuth, setShowAuth] = useState(false);
@@ -184,6 +190,74 @@ function App() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Generate custom email with user-specified prefix
+  const generateCustomEmail = async () => {
+    // Validate prefix
+    const prefix = customPrefix.trim().toLowerCase();
+    
+    if (!prefix) {
+      setCustomEmailError('Please enter a prefix');
+      return;
+    }
+    
+    if (prefix.length < 3) {
+      setCustomEmailError('Prefix must be at least 3 characters');
+      return;
+    }
+    
+    if (prefix.length > 20) {
+      setCustomEmailError('Prefix must be 20 characters or less');
+      return;
+    }
+    
+    if (!/^[a-z0-9._-]+$/.test(prefix)) {
+      setCustomEmailError('Only letters, numbers, dots, underscores, and hyphens allowed');
+      return;
+    }
+    
+    setLoading(true);
+    setCustomEmailError('');
+    
+    try {
+      if (DEMO_MODE) {
+        // Demo mode: Generate custom email client-side
+        const email = `${prefix}@ainewmail.online`;
+        setCurrentEmail(email);
+        setExpiresAt(Date.now() + 900000); // 15 minutes
+        setInbox([]);
+        setSelectedEmail(null);
+        setShowLanding(false);
+        setShowCustomEmail(false);
+        setCustomPrefix('');
+        logNetwork('POST', '/generate/custom', 200, 55);
+      } else {
+        const startTime = performance.now();
+        const response = await axios.post(`${API_URL}/generate`, { prefix });
+        const duration = Math.round(performance.now() - startTime);
+        logNetwork('POST', '/generate/custom', response.status, duration);
+        setCurrentEmail(response.data.email);
+        setExpiresAt(Date.now() + response.data.expiresIn);
+        setInbox([]);
+        setSelectedEmail(null);
+        setShowLanding(false);
+        setShowCustomEmail(false);
+        setCustomPrefix('');
+      }
+    } catch (error) {
+      console.error('Error generating custom email:', error);
+      setCustomEmailError('This prefix may already be taken. Try another.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get QR code URL for current email
+  const getQrCodeUrl = () => {
+    if (!currentEmail) return '';
+    // Using Google Charts API for QR code generation
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentEmail)}&bgcolor=ffffff&color=16a34a`;
   };
 
   const fetchInbox = async () => {
@@ -1183,18 +1257,41 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                         className={`flex-1 bg-transparent text-sm sm:text-base font-mono font-semibold outline-none min-w-0 ${loading && !currentEmail ? 'text-gray-500 animate-pulse' : 'text-gray-900 selection:bg-green-100'}`}
                       />
                     </div>
-                    <button
-                      onClick={copyToClipboard}
-                      disabled={loading && !currentEmail}
-                      className={`flex-shrink-0 px-3 py-2 sm:py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center justify-center space-x-2 ${loading && !currentEmail ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      title="Copy to clipboard"
-                    >
-                      {copied ? (
-                        <><Check className="w-4 h-4" /><span>Copied</span></>
-                      ) : (
-                        <><Copy className="w-4 h-4" /><span>Copy</span></>
-                      )}
-                    </button>
+                    <div className="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
+                      {/* QR Code Button */}
+                      <button
+                        onClick={() => setShowQrCode(true)}
+                        disabled={loading && !currentEmail}
+                        className={`p-2 sm:p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all ${loading && !currentEmail ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        title="Show QR Code"
+                      >
+                        <QrCode className="w-4 h-4" />
+                      </button>
+                      
+                      {/* Custom Email Button */}
+                      <button
+                        onClick={() => setShowCustomEmail(true)}
+                        disabled={loading && !currentEmail}
+                        className={`p-2 sm:p-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition-all ${loading && !currentEmail ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        title="Choose custom prefix"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      
+                      {/* Copy Button */}
+                      <button
+                        onClick={copyToClipboard}
+                        disabled={loading && !currentEmail}
+                        className={`px-3 py-2 sm:py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center justify-center space-x-2 ${loading && !currentEmail ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        title="Copy to clipboard"
+                      >
+                        {copied ? (
+                          <><Check className="w-4 h-4" /><span>Copied</span></>
+                        ) : (
+                          <><Copy className="w-4 h-4" /><span>Copy</span></>
+                        )}
+                      </button>
+                    </div>
                   </div>
                   {copied && (
                     <div className="absolute -top-12 right-0 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium shadow-lg flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
@@ -1881,6 +1978,148 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                   <span className="text-purple-600 font-semibold">
                     {authMode === 'login' ? 'Sign Up' : 'Sign In'}
                   </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QR Code Modal */}
+      {showQrCode && currentEmail && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+             onClick={() => setShowQrCode(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+               onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <QrCode className="w-6 h-6 text-white" />
+                <h3 className="text-lg font-bold text-white">QR Code</h3>
+              </div>
+              <button
+                onClick={() => setShowQrCode(false)}
+                className="p-1 hover:bg-white/20 rounded-lg transition-all"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6 text-center">
+              <p className="text-sm text-gray-600 mb-4">Scan this QR code to copy the email address to your phone</p>
+              
+              <div className="bg-white p-4 rounded-xl border-2 border-gray-100 inline-block mb-4">
+                <img 
+                  src={getQrCodeUrl()} 
+                  alt="QR Code for email" 
+                  className="w-48 h-48 mx-auto"
+                />
+              </div>
+              
+              <p className="text-sm font-mono text-gray-900 bg-gray-100 px-4 py-2 rounded-lg break-all">
+                {currentEmail}
+              </p>
+              
+              <button
+                onClick={() => {
+                  copyToClipboard();
+                  setShowQrCode(false);
+                }}
+                className="mt-4 w-full px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-all flex items-center justify-center space-x-2"
+              >
+                <Copy className="w-4 h-4" />
+                <span>Copy Email</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Email Modal */}
+      {showCustomEmail && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+             onClick={() => { setShowCustomEmail(false); setCustomEmailError(''); setCustomPrefix(''); }}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+               onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Sparkles className="w-6 h-6 text-white" />
+                <h3 className="text-lg font-bold text-white">Custom Email</h3>
+              </div>
+              <button
+                onClick={() => { setShowCustomEmail(false); setCustomEmailError(''); setCustomPrefix(''); }}
+                className="p-1 hover:bg-white/20 rounded-lg transition-all"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6">
+              <p className="text-sm text-gray-600 mb-4">Choose your own email prefix for a personalized temporary address</p>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email Prefix</label>
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    value={customPrefix}
+                    onChange={(e) => {
+                      setCustomPrefix(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ''));
+                      setCustomEmailError('');
+                    }}
+                    placeholder="yourname"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all font-mono text-gray-900"
+                    maxLength={20}
+                    autoFocus
+                  />
+                  <span className="px-4 py-3 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-gray-600 font-mono text-sm">
+                    @ainewmail.online
+                  </span>
+                </div>
+                {customEmailError && (
+                  <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
+                    <AlertCircle className="w-4 h-4" />
+                    <span>{customEmailError}</span>
+                  </p>
+                )}
+                <p className="mt-2 text-xs text-gray-500">
+                  3-20 characters. Letters, numbers, dots, underscores, and hyphens only.
+                </p>
+              </div>
+              
+              {/* Preview */}
+              {customPrefix && (
+                <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                  <p className="text-xs text-purple-600 font-medium mb-1">Preview</p>
+                  <p className="font-mono text-purple-900 font-semibold">
+                    {customPrefix.toLowerCase()}@ainewmail.online
+                  </p>
+                </div>
+              )}
+              
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => { setShowCustomEmail(false); setCustomEmailError(''); setCustomPrefix(''); }}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={generateCustomEmail}
+                  disabled={loading || !customPrefix}
+                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  {loading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>Create Email</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
