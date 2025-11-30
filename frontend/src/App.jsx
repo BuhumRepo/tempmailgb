@@ -2118,7 +2118,10 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                   Cancel
                 </button>
                 <button
-                  onClick={generateCustomEmail}
+                  onClick={() => {
+                    console.log('Create Email button clicked!', { loading, customPrefix });
+                    generateCustomEmail();
+                  }}
                   disabled={loading || !customPrefix}
                   className="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                 >
