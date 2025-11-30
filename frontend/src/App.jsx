@@ -1164,29 +1164,29 @@ ${selectedEmail.html_body || selectedEmail.body}`}
           
           {/* Email Generator - Shopify Style */}
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200/60 p-4 sm:p-8 mb-4 sm:mb-6">
-          {loading && !currentEmail ? (
-            <div className="text-center py-12">
-              <RefreshCw className="w-12 h-12 text-green-600 animate-spin mx-auto mb-4" />
-              <p className="text-gray-600 font-medium">Generating your temporary email...</p>
-            </div>
-          ) : currentEmail ? (
+          {(currentEmail || loading) ? (
             <div className="space-y-3 sm:space-y-5">
               <div>
                 <h1 className="text-lg sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">Your temporary email address</h1>
                 <div className="relative">
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2.5 bg-gray-50/50 border border-gray-300 hover:border-gray-400 p-2 sm:p-2.5 rounded-xl focus-within:border-green-600 focus-within:ring-2 sm:focus-within:ring-4 focus-within:ring-green-100 transition-all group">
                     <div className="flex items-center space-x-2 flex-1 min-w-0">
-                      <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                      {loading && !currentEmail ? (
+                        <RefreshCw className="w-4 h-4 text-green-600 animate-spin flex-shrink-0" />
+                      ) : (
+                        <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                      )}
                       <input
                         type="text"
-                        value={currentEmail}
+                        value={currentEmail || "Generating temporary email..."}
                         readOnly
-                        className="flex-1 bg-transparent text-sm sm:text-base font-mono font-semibold outline-none text-gray-900 selection:bg-green-100 min-w-0"
+                        className={`flex-1 bg-transparent text-sm sm:text-base font-mono font-semibold outline-none min-w-0 ${loading && !currentEmail ? 'text-gray-500 animate-pulse' : 'text-gray-900 selection:bg-green-100'}`}
                       />
                     </div>
                     <button
                       onClick={copyToClipboard}
-                      className="flex-shrink-0 px-3 py-2 sm:py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center justify-center space-x-2"
+                      disabled={loading && !currentEmail}
+                      className={`flex-shrink-0 px-3 py-2 sm:py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all text-sm font-medium flex items-center justify-center space-x-2 ${loading && !currentEmail ? 'opacity-50 cursor-not-allowed' : ''}`}
                       title="Copy to clipboard"
                     >
                       {copied ? (
@@ -1213,7 +1213,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                     </div>
                     <div>
                       <p className="text-xs text-blue-600/80 font-medium">Expires in</p>
-                      <p className="text-lg sm:text-xl font-semibold text-blue-900">15 Minutes</p>
+                      <p className="text-lg sm:text-xl font-semibold text-blue-900">{currentEmail ? '15 Minutes' : '--'}</p>
                     </div>
                   </div>
                 </div>
