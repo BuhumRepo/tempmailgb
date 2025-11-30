@@ -1296,15 +1296,7 @@ ${selectedEmail.html_body || selectedEmail.body}`}
               </div>
 
               <div className="divide-y divide-gray-100 max-h-[400px] sm:max-h-[500px] overflow-y-auto">
-                {loading && !currentEmail ? (
-                  <div className="p-8 sm:p-12 text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 rounded-xl mb-3">
-                      <RefreshCw className="w-6 h-6 sm:w-7 sm:h-7 text-green-600 animate-spin" />
-                    </div>
-                    <p className="text-gray-900 font-medium text-sm">Loading inbox...</p>
-                    <p className="text-xs text-gray-500 mt-1">Connecting to secure server</p>
-                  </div>
-                ) : inbox.length === 0 ? (
+                {inbox.length === 0 ? (
                   <div className="p-8 sm:p-12 text-center">
                     <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-xl mb-3">
                       <Mail className="w-6 h-6 sm:w-7 sm:h-7 text-gray-400" />
