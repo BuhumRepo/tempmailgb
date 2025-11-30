@@ -138,6 +138,52 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [currentEmail, selectedEmail, showCommandPalette]);
 
+  // Email content decoder - handles quoted-printable and other encodings
+  const decodeEmailContent = (content) => {
+    if (!content) return '';
+    
+    let decoded = content;
+    
+    // Decode quoted-printable encoding (=XX patterns)
+    decoded = decoded.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
+      return String.fromCharCode(parseInt(hex, 16));
+    });
+    
+    // Handle soft line breaks (=\r\n or =\n)
+    decoded = decoded.replace(/=\r?\n/g, '');
+    
+    // Decode common UTF-8 sequences that might still be garbled
+    try {
+      // Try to decode as UTF-8 if it looks like UTF-8 bytes
+      const bytes = [];
+      for (let i = 0; i < decoded.length; i++) {
+        bytes.push(decoded.charCodeAt(i));
+      }
+      const uint8Array = new Uint8Array(bytes);
+      const utf8Decoded = new TextDecoder('utf-8', { fatal: false }).decode(uint8Array);
+      if (utf8Decoded && !utf8Decoded.includes('�')) {
+        decoded = utf8Decoded;
+      }
+    } catch (e) {
+      // Keep the partially decoded version
+    }
+    
+    return decoded;
+  };
+
+  // Sanitize and prepare HTML email content
+  const prepareHtmlContent = (htmlContent) => {
+    if (!htmlContent) return '';
+    
+    let html = decodeEmailContent(htmlContent);
+    
+    // Add target="_blank" to all links for security
+    html = html.replace(/<a /gi, '<a target="_blank" rel="noopener noreferrer" ');
+    
+    // Wrap in a container that constrains styles
+    return html;
+  };
+
   // Network logging helper
   const logNetwork = (method, endpoint, status, duration) => {
     const log = {
@@ -1511,31 +1557,65 @@ ${selectedEmail.html_body || selectedEmail.body}`}
                     {viewMode === 'html' && selectedEmail.html_body ? (
                       <div className="w-full">
                         <div 
-                          className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-6"
+                          className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
                           style={{
                             minHeight: '200px'
                           }}
                         >
-                          <div 
-                            className="email-html-content"
-                            dangerouslySetInnerHTML={{ __html: selectedEmail.html_body }}
-                            style={{
-                              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                              fontSize: '14px',
-                              lineHeight: '1.6',
-                              color: '#374151',
-                              wordWrap: 'break-word',
-                              overflowWrap: 'break-word',
-                              textAlign: 'left'
-                            }}
+                          {/* Email content iframe for proper isolation */}
+                          <iframe
+                            srcDoc={`
+                              <!DOCTYPE html>
+                              <html>
+                              <head>
+                                <meta charset="UTF-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <style>
+                                  * { box-sizing: border-box; }
+                                  body { 
+                                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                                    font-size: 14px;
+                                    line-height: 1.6;
+                                    color: #374151;
+                                    margin: 0;
+                                    padding: 16px;
+                                    word-wrap: break-word;
+                                    overflow-wrap: break-word;
+                                    background: white;
+                                  }
+                                  a { color: #16a34a; }
+                                  img { max-width: 100%; height: auto; }
+                                  table { max-width: 100%; }
+                                  pre, code { 
+                                    background: #f3f4f6; 
+                                    padding: 2px 6px; 
+                                    border-radius: 4px;
+                                    font-size: 13px;
+                                    overflow-x: auto;
+                                  }
+                                  blockquote {
+                                    border-left: 3px solid #d1d5db;
+                                    margin: 8px 0;
+                                    padding-left: 12px;
+                                    color: #6b7280;
+                                  }
+                                </style>
+                              </head>
+                              <body>${prepareHtmlContent(selectedEmail.html_body)}</body>
+                              </html>
+                            `}
+                            className="w-full border-0"
+                            style={{ minHeight: '300px', height: '500px' }}
+                            sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                            title="Email content"
                           />
                         </div>
                       </div>
                     ) : (
                       <div className="w-full">
                         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-6">
-                          <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-sm sm:text-base text-left break-words" style={{ fontFamily: 'monospace' }}>
-                            {selectedEmail.body}
+                          <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-sm sm:text-base text-left break-words" style={{ fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace' }}>
+                            {decodeEmailContent(selectedEmail.body)}
                           </p>
                         </div>
                       </div>
